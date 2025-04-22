@@ -4,10 +4,11 @@ import axios from 'axios';
 const BASE_URL = 'https://studious-halibut-pjwj4wrr5r95fj5w-5000.app.github.dev/';
 
 // create axios instance with the base URL
-const api = axios.create({
+// withCredentials to allow session cookies to be sent with requests
+const apiClient = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
 
 // export axios instance for import
-export default api;
+export default apiClient;

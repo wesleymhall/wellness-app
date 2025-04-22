@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import api from '../api.js';
+import apiClient from '../../apiClient.js';
 
 
-function Login() {
+// pass onLogin function as prop
+function Login({ onLogin }) {
     // react hooks let us change and track state in functional components
     // const [state, setState] = useState(initialValue)
     const [username, setUsername] = useState('');
@@ -16,13 +17,11 @@ function Login() {
         // try to send POST request to flask server with username and password
         try {
             // use axios instance with endpoint and data
-            const response = await api.post('/auth/login', {
+            const response = await apiClient.post('/auth/login', {
                 username,
                 password,
             });
-            // if successful, set message to response data
-            setMessage(response.data.message);
-            // call onLogin function passed as prop
+            // if success, call onLogin function passed as prop
             onLogin();
         } catch (error) { // if error occurs, set message to error response data
             setMessage(error.response.data.error);
@@ -32,24 +31,24 @@ function Login() {
     // return JSX to render
     return (
         <div>
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-            <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Login</button>
-        </form>
-        {/* if message is not empty, display it */}
-        {message && <p>{message}</p>}
+            <h2>Login</h2>
+            <form onSubmit={handleSubmit}>
+                <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit">Login</button>
+            </form>
+            {/* if message is not empty, display it */}
+            {message && <p>{message}</p>}
         </div>
     );
 };
