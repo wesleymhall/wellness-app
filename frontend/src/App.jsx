@@ -9,7 +9,7 @@ function App() {
     <>
       {/* define routes for the app */}
       <Routes>
-        {/* default route directs to auth page */}
+        {/* default route directs to auth */}
         <Route path='/' element={<Navigate to="/auth" />} />
         <Route path='/auth' element={<Auth />} />
         <Route path='/home' element={<Home />} />

@@ -12,7 +12,7 @@ function Auth() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
 
-    // handle login function
+    // check session to see if user is logged in
     const checkSession = async () => {
         try {
             const response = await apiClient.get('/auth/session')
@@ -47,7 +47,7 @@ function Auth() {
                     {/* props are used to pass data and logic to child components */}
                     <Register toggleRegister={toggleRegister} />
                     <p>
-                        Already have an account?{' '} {/* add space */}
+                        Already have an account?{' '}
                         <button onClick={toggleRegister}>Login</button>
                     </p>
                 </>

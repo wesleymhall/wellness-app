@@ -4,8 +4,7 @@ import apiClient from '../../apiClient.js';
 
 // pass toggleRegister function as prop
 function Register({ toggleRegister }) {
-    // react hooks let us change and track state in functional components
-    // const [state, setState] = useState(initialValue)
+    // configure react hooks to manage state
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');

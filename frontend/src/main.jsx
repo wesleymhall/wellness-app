@@ -7,8 +7,8 @@ import App from './App.jsx'
 // create root container for react app
 // mount App component to root element in index.html
 createRoot(document.getElementById('root')).render(
-  <StrictMode> {/* strict mode for react error handling */}
-    <BrowserRouter> {/* browser router for routing */}
+  <StrictMode> {/* StrictMode for react error handling */}
+    <BrowserRouter> {/* BrowserRouter for routing */}
       <App /> {/* render App component */}
     </BrowserRouter>
   </StrictMode>

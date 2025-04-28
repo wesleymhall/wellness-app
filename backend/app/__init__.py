@@ -19,7 +19,6 @@ def create_app():
     # initialize extensions
     bcrypt.init_app(app)
     # enable cross-origin resource sharing (CORS) for all routes
-    # allow flask to accept requests from react at a seperate port
     # TODO: change in production to allow specific domains
     cors.init_app(app, supports_credentials=True)
     session.init_app(app)

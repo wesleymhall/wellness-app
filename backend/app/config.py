@@ -9,7 +9,6 @@ class Config:
     # session data is stored on the server side
     # client recieves a random session id in a signed cookie
     SESSION_TYPE = 'filesystem'
-    # TODO: change secret key in production
     # key is used to sign the session cookie
     # prevents clients from tampering with the cookie
     SECRET_KEY = os.getenv('SECRET_KEY')
