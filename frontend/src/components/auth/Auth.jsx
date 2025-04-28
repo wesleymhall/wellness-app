@@ -1,6 +1,5 @@
 import apiClient from '../../apiClient.js';
 import Login from "./Login";
-import Logout from "./Logout";
 import Register from "./Register";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";

@@ -51,7 +51,8 @@ def login():
     
     # create session for user
     session['username'] = username
-    print("Session after login:", session)
+    session.modified = True 
+    print('Session after login:', session)
     
     return jsonify({'message': 'User logged in successfully'}), 200
 
@@ -67,6 +68,7 @@ def logout():
 
 @auth_bp.route('/session', methods=['GET'])
 def check_session():
+    print('Session data:', session)
     # check if user is logged in
     if 'username' in session:
         return jsonify({'isLoggedIn': True, 'username': session['username']}), 200

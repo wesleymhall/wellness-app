@@ -12,3 +12,7 @@ class Config:
     # key is used to sign the session cookie
     # prevents clients from tampering with the cookie
     SECRET_KEY = os.getenv('SECRET_KEY')
+
+    # TODO: configure https
+    SESSION_COOKIE_SECURE = False 
+    SESSION_COOKIE_SAMESITE = 'Lax'
