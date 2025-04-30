@@ -1,3 +1,4 @@
+import MetricsModal from './MetricsModal';
 import { useState } from 'react';
 import { 
     startOfMonth,
@@ -6,6 +7,7 @@ import {
     format,
     addMonths,
     subMonths,
+    set,
 } from 'date-fns';
 
 
@@ -13,6 +15,8 @@ function Calendar() {
     // configure react hooks to manage state
     // set default month to current date
     const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     // set month bounds
     const monthStart = startOfMonth(currentMonth);
@@ -33,6 +37,16 @@ function Calendar() {
         setCurrentMonth((prev) => subMonths(prev, 1));
     };
 
+    // functions to select a day and show metrics modal
+    const handleDaySelect = (day) => {
+        setSelectedDay(day);
+        setShowModal(true);
+    }
+    const handleModalClose = () => {
+        setSelectedDay(null);
+        setShowModal(false);
+    }
+
     // return JSX to render
     return (
         <div className='calendar-container'>
@@ -48,11 +62,23 @@ function Calendar() {
                 {/* assign unique key to each element */}
                 {/* format date object as number */}
                 {days.map((day) => (
-                    <div key={day.toISOString()} className='calendar-day'>
+                    <div 
+                        key={day.toISOString()} 
+                        className='calendar-day'
+                        onClick={() => handleDaySelect(day)}
+                    >
                         {format(day, 'd')}
                     </div>
                 ))}
             </div>
+            {/* if showModal and selectedDay, render metrics modal */}
+            {/* pass selectedDay and handleModalClose as props */}
+            {showModal && selectedDay && (
+                <MetricsModal
+                    selectedDay={selectedDay}
+                    onClose={handleModalClose}
+                />
+            )}
         </div>
     );
 }

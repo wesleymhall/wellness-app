@@ -6,9 +6,6 @@ from flask import Blueprint, request, jsonify, session
 # define blueprint
 auth_bp = Blueprint('auth', __name__)
 
-# TODO: replace with a real SQLite database
-user = {}
-
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -23,7 +20,8 @@ def register():
         return jsonify({'error': 'Username and password are required'}), 400
 
     # check if user already exists
-    if username in user:
+    user = User.query.filter_by(username=username).first()
+    if user:
         return jsonify({'error': 'User already exists'}), 400
     
     # hash the password

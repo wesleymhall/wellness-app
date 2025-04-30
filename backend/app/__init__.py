@@ -25,9 +25,9 @@ def create_app():
     db.init_app(app)
     
     # register blueprints from routes/__init__.py
-    from .routes import auth_bp
-    # all routes in auth_bp will be prefixed with /auth
+    from .routes import auth_bp, profile_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(profile_bp, url_prefix='/profile')
 
     # return app instance
     return app
