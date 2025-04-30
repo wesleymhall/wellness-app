@@ -1,5 +1,7 @@
-from flask import Blueprint, request, jsonify, session
+from app import db
+from app.models import User
 from app.utils import hash_password, verify_password
+from flask import Blueprint, request, jsonify, session
 
 # define blueprint
 auth_bp = Blueprint('auth', __name__)
@@ -10,6 +12,7 @@ user = {}
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
+    # TODO: restrict username and password length
     # convert json request data to python dictionary
     data = request.get_json()
     username = data['username']
@@ -25,7 +28,11 @@ def register():
     
     # hash the password
     hashed_password = hash_password(password)
-    user[username] = hashed_password
+    
+    # insert user into database
+    new_user = User(username=username, password_hash=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
     
     return jsonify({'message': 'User registered successfully'}), 201
 
@@ -41,13 +48,11 @@ def login():
     if not username or not password:
         return jsonify({'error': 'Username and password are required'}), 400
 
-    # check if user exists
-    if username not in user:
-        return jsonify({'error': 'User does not exist'}), 400
-    
-    # check if password is correct
-    if not verify_password(user[username], password):
-        return jsonify({'error': 'Invalid password'}), 400
+    # check if user exists and verify password
+    # use first to get a single user object
+    user = User.query.filter_by(username=username).first()
+    if not user or not verify_password(user.password_hash, password):
+        return jsonify({'error': 'Invalid username or password'}), 400
     
     # create session for user
     session['username'] = username

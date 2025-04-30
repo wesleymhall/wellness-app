@@ -1,12 +1,13 @@
-import sqlite3
-from flask import Flask, jsonify
-from flask_cors import CORS
+from flask import Flask
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from flask_session import Session
+from flask_sqlalchemy import SQLAlchemy
 
 # extensions
 bcrypt = Bcrypt()
 cors = CORS()
+db = SQLAlchemy()
 session = Session()
 
 
@@ -18,10 +19,10 @@ def create_app():
 
     # initialize extensions
     bcrypt.init_app(app)
-    # enable cross-origin resource sharing (CORS) for all routes
-    # TODO: change in production to allow specific domains
+    # TODO: change CORS in production to restrict domain access
     cors.init_app(app, supports_credentials=True)
     session.init_app(app)
+    db.init_app(app)
     
     # register blueprints from routes/__init__.py
     from .routes import auth_bp
