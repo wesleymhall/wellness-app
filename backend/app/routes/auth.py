@@ -73,7 +73,6 @@ def logout():
 
 @auth_bp.route('/session', methods=['GET'])
 def check_session():
-    print('Session data:', session)
     # check if user is logged in
     if 'username' in session:
         return jsonify({'isLoggedIn': True, 'username': session['username']}), 200

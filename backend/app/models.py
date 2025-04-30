@@ -30,7 +30,7 @@ class Log(db.Model):
     # initialise columns
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
+    date = db.Column(db.Date, nullable=False)
     # foreign keys
     user_id = db.Column(db.Integer, db.ForeignKey('users.id',  ondelete='CASCADE'), nullable=False)
     metric_id = db.Column(db.Integer, db.ForeignKey('metrics.id',  ondelete='CASCADE'), nullable=False)

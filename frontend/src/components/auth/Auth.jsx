@@ -1,8 +1,8 @@
 import apiClient from '../../apiClient.js';
-import Login from "./Login";
-import Register from "./Register";
-import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import Login from './Login';
+import Register from './Register';
+import { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 
 
 function Auth() {
@@ -33,7 +33,7 @@ function Auth() {
 
     // if logged in, navigate to home page
     if (isLoggedIn) {
-        return <Navigate to='/home' />;
+        return <Navigate to='/profile' />;
     }
 
     // return JSX to render
