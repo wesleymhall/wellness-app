@@ -1,13 +1,13 @@
-import Calendar from './Calendar.jsx';
+import Log from './Log.jsx'
 import Logout from '../auth/Logout.jsx';
 
 
-function Profile () {
+function Home () {
     // return JSX to render
     return (
         <>
-            {/* render Calendar component */}
-            <Calendar />
+            {/* render Log component */}
+            <Log />
             {/* render Logout component */}
             <Logout />
         </>
@@ -15,4 +15,4 @@ function Profile () {
 }
 
 // export functional component for import
-export default Profile;
+export default Home;
