@@ -1,6 +1,6 @@
 import './App.css';
 import Auth from "./components/auth/Auth.jsx";
-import Home from "./components/home/Home.jsx";
+import Dash from "./components/dash/Dash.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 
@@ -13,7 +13,7 @@ function App() {
         {/* default route directs to auth */}
         <Route path='/' element={<Navigate to="/auth" />} />
         <Route path='/auth' element={<Auth />} />
-        <Route path='/home' element={<Home />} />
+        <Route path='/dash' element={<Dash />} />
       </Routes>
     </>
   );

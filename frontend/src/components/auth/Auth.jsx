@@ -33,7 +33,7 @@ function Auth() {
 
     // if logged in, navigate to home page
     if (isLoggedIn) {
-        return <Navigate to='/home' />;
+        return <Navigate to='/dash' />;
     }
 
     // return JSX to render

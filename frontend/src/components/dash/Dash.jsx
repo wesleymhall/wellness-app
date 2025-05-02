@@ -2,11 +2,11 @@ import Log from './Log.jsx'
 import Logout from '../auth/Logout.jsx';
 
 
-function Home () {
+function Dash () {
     // return JSX to render
     return (
         <>
-            {/* render Log component */}
+            {/* render LogEntry component */}
             <Log />
             {/* render Logout component */}
             <Logout />
@@ -15,4 +15,4 @@ function Home () {
 }
 
 // export functional component for import
-export default Home;
+export default Dash;
