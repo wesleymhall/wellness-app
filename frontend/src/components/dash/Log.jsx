@@ -45,9 +45,11 @@ function Log() {
                 <ul>
                     {response.tagged_sentences.map((item, index) => (
                         <li key={index}>
-                            <p><strong>Sentence:</strong> {item.sentence}</p>
-                            <p><strong>Label:</strong> {item.label}</p>
-                            <p><strong>Confidence:</strong> {item.confidence.toFixed(2)}</p>
+                            <p>sentence: {item.sentence}</p>
+                            <p>label: {item.label}</p>
+                            <p>confidence: {item.label_confidence}</p>
+                            <p>sentiment: {item.sentiment}</p>
+                            <p>confidence: {item.sentiment_confidence}</p>
                         </li>
                     ))}
                 </ul>

@@ -2,6 +2,12 @@ from flask import Blueprint, request, jsonify
 from nltk.tokenize import sent_tokenize
 from transformers import pipeline
 import nltk
+import ssl
+import certifi
+
+# set up SSL context to resolve certificate issues
+ssl._create_default_https_context = ssl.create_default_context
+ssl._create_default_https_context().load_verify_locations(certifi.where())
 
 # if not downloaded
 # download the punkt tokenizer model for sentence tokenization
@@ -16,58 +22,24 @@ except LookupError:
 dash_bp = Blueprint('dash', __name__)
 
 # load huggingface models
-classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-sentiment_analyzer = pipeline("sentiment-analysis")
+classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
+sentiment_analyzer = pipeline('sentiment-analysis', model='distilbert-base-uncased-finetuned-sst-2-english')
 
 # TODO: move to database
 # predefined labels
 LABELS = [
-    "stress",
-    "anxiety",
-    "depression",
-    "mood",
-    "energy",
-    "sleep",
-    "appetite",
-    "motivation",
-    "concentration",
-    "social",
-    "irritability",
-    "hopelessness",
-    "self-esteem",
-    "emotional stability",
-    "clarity",
-    "rumination",
-    "overwhelm",
-    "gratitude",
-    "confidence",
-    "fatigue",
-    "restlessness",
-    "tension",
-    "exercise",
-    "hydration",
-    "nutrition",
-    "body image",
-    "pain",
-    "productivity",
-    "focus",
-    "routine",
-    "time management",
-    "task completion",
-    "distraction",
-    "organization",
-    "loneliness",
-    "connection",
-    "communication",
-    "support",
-    "conflict",
-    "boundaries",
-    "resilience",
-    "coping skills",
-    "mindfulness",
-    "self-care",
-    "emotional regulation",
-    "growth mindset"
+    'mood',
+    'stress',
+    'energy',
+    'sleep',
+    'nutrition',
+    'exercise',
+    'hydration',
+    'focus',
+    'productivity',
+    'connection',
+    'self-care',
+    'growth'
 ]
 
 
@@ -91,11 +63,11 @@ def log():
         sentiment_confidence = sentiment_result['score']
 
         tagged_sentences.append({
-            "sentence": sentence,
-            "label": top_label,
-            "label_confidence": classification_confidence,
-            "sentiment": sentiment_label,
-            "sentiment_confidence": sentiment_confidence
+            'sentence': sentence,
+            'label': top_label,
+            'label_confidence': classification_confidence,
+            'sentiment': sentiment_label,
+            'sentiment_confidence': sentiment_confidence
         })
 
     print(tagged_sentences)
