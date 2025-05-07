@@ -60,9 +60,9 @@ function MoodLog() {
                             style={{
                                 transform: submitted
                                     ? isSelected
-                                        ? `scale(1.2)`
-                                        : `translateY(100px) translateX(${position * 45}px) rotate(${position * 3}deg)`
-                                    : `translateX(${position * 45}px) translateY(${Math.abs(position) * 10}px) scale(${isSelected ? 1.2 : 1}) rotate(${position * 3}deg)`,
+                                        ? `scale(1.3)`
+                                        : `translateY(100px) translateX(${position * 75}px)`
+                                    : `translateX(${position * 75}px) scale(${isSelected ? 1.3 : 1})`,
                                 zIndex: isSelected ? 10 : 10 - Math.abs(position),
                                 opacity: submitted
                                     ? isSelected
