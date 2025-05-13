@@ -5,21 +5,20 @@ import '../../App.css';
 
 function MoodLog() {
     // configure react hooks to manage state
-    const [selectedMoodIndex, setSelectedMoodIndex] = useState(5);
-    const [submitted, setSubmitted] = useState(false); // Track submission status
+    const [selectedMoodIndex, setSelectedMoodIndex] = useState(3);
+    const [submitted, setSubmitted] = useState(false);
+    const [prompt, setPrompt] = useState('how do u feel?')
     const navigate = useNavigate();
 
     // array of moods
     const moods = [
-        { id: 1, image: '/images/Smiley.svg' },
-        { id: 2, image: '/images/Smiley.svg' },
-        { id: 3, image: '/images/Smiley.svg' },
-        { id: 4, image: '/images/Smiley.svg' },
-        { id: 5, image: '/images/Smiley.svg' },
-        { id: 6, image: '/images/Smiley.svg' },
-        { id: 7, image: '/images/Smiley.svg' },
-        { id: 8, image: '/images/Smiley.svg' },
-        { id: 9, image: '/images/Smiley.svg' },
+        { id: 1, mood: '(╥﹏╥)' },
+        { id: 2, mood: '(ಥ﹏ಥ)' },
+        { id: 3, mood: '(︶︹︶)' },
+        { id: 4, mood: '(・_・)' },
+        { id: 5, mood: '(^ ‿ ^)' },
+        { id: 6, mood: '(≧◡≦)' },
+        { id: 7, mood: '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧' },
     ];
 
     // set selected mood to the index of the mood clicked
@@ -30,15 +29,16 @@ function MoodLog() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const selectedMood = moods[selectedMoodIndex];
-        console.log(selectedMood)
         try {
             // send the selected mood index to the backend
-            await apiClient.post('/welcome/logmood', { mood: selectedMood.id });
+            await apiClient.post('/welcome/logmetric', { name: 'mood', value: selectedMood.id });
             // set submission status to true
             setSubmitted(true);
+            // set prompt to approval emote
+            setPrompt('ദ്ദി(˵•̀ᴗ- ˵)✧')
             // redirect to dash after a short delay
             setTimeout(() => {
-                navigate('/dash');
+                navigate('/sleeplog');
             }, 1000);
         } catch (error) {
             console.error('Error logging mood:', error);
@@ -47,8 +47,9 @@ function MoodLog() {
     };
 
     return (
-        <div>
-            <div className="card-container">
+        <div className='vertical-flex'>
+            <p>{prompt}</p>
+            <div className='card-container'>
                 {moods.map((mood, index) => {
                     const position = index - selectedMoodIndex;
                     const isSelected = position === 0;
@@ -74,7 +75,7 @@ function MoodLog() {
                             }}
                             onClick={() => handleMoodSelect(index)}
                         >
-                            <img src={mood.image} />
+                            <p>{mood.mood}</p>
                         </div>
                     );
                 })}

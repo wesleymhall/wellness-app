@@ -1,4 +1,5 @@
 from app import db
+from datetime import date
 
 # create classes that extend db.Model class from Flask-SQLAlchemy
 # db.Model registers classes in metadata object with the db instance
@@ -11,3 +12,23 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+
+class Metric(db.Model):
+    __tablename__ = 'metrics'
+    # initialise columns
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    # foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    # metric can have many logs
+    logs = db.relationship('Log', backref='metric', lazy=True, cascade='all, delete-orphan')
+
+#TODO: change how timestamp is stored
+class Log(db.Model):
+    __tablename__ = 'logs'
+    # initialise columns
+    id = db.Column(db.Integer, primary_key=True)
+    value = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.Date, nullable=False, default=date.today)
+    # foreign key
+    metric_id = db.Column(db.Integer, db.ForeignKey('metrics.id',  ondelete='CASCADE'), nullable=False)

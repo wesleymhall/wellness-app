@@ -30,21 +30,21 @@ function Login({ onLogin }) {
     // return JSX to render
     return (
         <div>
-            <h2>Login</h2>
+            <h2>login</h2>
             <form onSubmit={handleSubmit}>
                 <input
-                type="text"
-                placeholder="Username"
+                type='text'
+                placeholder='username'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
-                type="password"
-                placeholder="Password"
+                type='password'
+                placeholder='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">Login</button>
+                <button type='submit'>login</button>
             </form>
             {/* if message is not empty, display it */}
             {message && <p>{message}</p>}

@@ -1,5 +1,6 @@
+import apiClient from '../../apiClient.js';
 import MetricsModal from './MetricsModal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
     startOfMonth,
     endOfMonth,
@@ -15,8 +16,20 @@ function Calendar() {
     // configure react hooks to manage state
     // set default month to current date
     const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [logs, setLogs] = useState({});
     const [selectedDay, setSelectedDay] = useState(null);
     const [showModal, setShowModal] = useState(false);
+
+    // array of moods
+    const moods = [
+        { id: 1, mood: '(╥﹏╥)' },
+        { id: 2, mood: '(ಥ﹏ಥ)' },
+        { id: 3, mood: '(︶︹︶)' },
+        { id: 4, mood: '(・_・)' },
+        { id: 5, mood: '(^ ‿ ^)' },
+        { id: 6, mood: '(≧◡≦)' },
+        { id: 7, mood: '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧' },
+    ];
 
     // set month bounds
     const monthStart = startOfMonth(currentMonth);
@@ -26,6 +39,34 @@ function Calendar() {
         start: monthStart,
         end: monthEnd,
     });
+
+    // on element mount, get metrics logs data from backend
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await apiClient.get('/dash/getlogs');
+                const metricsLogs = response.data.metrics_logs;
+
+                // map logs to their corresponding dates
+                const logsByDate = {};
+                metricsLogs.forEach((metric) => {
+                    metric.logs.forEach((log) => {
+                        // convert timestamp to date object
+                        const date = new Date(log.timestamp).toISOString().split('T')[0];
+                        if (!logsByDate[date]) {
+                            logsByDate[date] = [];
+                        }
+                        logsByDate[date].push(log.value); // Store log values
+                    });
+                });
+
+                setLogs(logsByDate);
+            } catch (error) {
+                console.error('Error fetching logs:', error);
+            }
+        };
+        fetchData();
+    }, [currentMonth]); // Refetch logs when the month changes
 
     // functions to navigate between months
     const goToNextMonth = () => {
@@ -49,11 +90,12 @@ function Calendar() {
 
     // return JSX to render
     return (
+        <div className='centered'>
         <div className='calendar-container'>
             {/* month navigation */}
             <div className='calendar-header'>
                 <button className='calendar-nav-button' onClick={goToPreviousMonth}>&lt;</button>
-                <h2 className='calendar-title'>{format(currentMonth, 'MMMM yyyy')}</h2>
+                <p className='calendar-title'>{format(currentMonth, 'MMMM yyyy')}</p>
                 <button className='calendar-nav-button' onClick={goToNextMonth}>&gt;</button>
             </div>
             {/* days grid */}
@@ -67,7 +109,18 @@ function Calendar() {
                         className='calendar-day'
                         onClick={() => handleDaySelect(day)}
                     >
-                        {format(day, 'd')}
+                        {/* check if day has logs */}
+                        {/* if so, render the logs */}
+                        {/* else render empty state */}
+                        {logs[format(day, 'yyyy-MM-dd')] ? (
+                            <div className='calendar-day-logs'>
+                                {logs[format(day, 'yyyy-MM-dd')].map((log, index) => (
+                                    <div key={index} className='calendar-log'>
+                                        {moods.find((mood) => mood.id == log)?.mood || log}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (null)}
                     </div>
                 ))}
             </div>
@@ -75,10 +128,10 @@ function Calendar() {
             {/* pass selectedDay and handleModalClose as props */}
             {showModal && selectedDay && (
                 <MetricsModal
-                    selectedDay={selectedDay}
                     onClose={handleModalClose}
                 />
             )}
+        </div>
         </div>
     );
 }

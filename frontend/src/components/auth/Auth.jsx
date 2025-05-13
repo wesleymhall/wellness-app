@@ -34,11 +34,11 @@ function Auth() {
     // if logged in, navigate to home page
     if (isLoggedIn) {
         return <Navigate to='/welcome' />;
-    }
+    };
 
     // return JSX to render
     return (
-        <>
+        <div className='vertical-flex'>
             {isRegistering ? (
                 <>
                     {/* if registering */}
@@ -46,8 +46,8 @@ function Auth() {
                     {/* props are used to pass data and logic to child components */}
                     <Register toggleRegister={toggleRegister} />
                     <p>
-                        Already have an account?{' '}
-                        <button onClick={toggleRegister}>Login</button>
+                        already have an account?{' '}
+                        <button onClick={toggleRegister}>login</button>
                     </p>
                 </>
             ) : (
@@ -56,12 +56,12 @@ function Auth() {
                     {/* render Login component and pass checkSession as prop*/}
                     <Login onLogin={checkSession} />
                     <p>
-                        Don't have an account?{' '}
-                        <button onClick={toggleRegister}>Register</button>
+                        don't have an account?{' '}
+                        <button onClick={toggleRegister}>register</button>
                     </p>
                 </>
             )}
-        </>
+        </div>
     );
 }
 

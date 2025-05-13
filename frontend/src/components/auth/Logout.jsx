@@ -16,7 +16,7 @@ function Logout() {
     // return JSX to render
     return (
         <div>
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout}>logout</button>
         </div>
     );
 };

@@ -30,21 +30,21 @@ function Register({ toggleRegister }) {
     // return JSX to render
     return (
         <div>
-            <h2>Register</h2>
+            <h2>register</h2>
             <form onSubmit={handleSubmit}>
                 <input
                 type="text"
-                placeholder="Username"
+                placeholder="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
                 type="password"
-                placeholder="Password"
+                placeholder="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">Register</button>
+                <button type="submit">register</button>
             </form>
             {/* if message is not empty, display it */}
             {message && <p>{message}</p>}
