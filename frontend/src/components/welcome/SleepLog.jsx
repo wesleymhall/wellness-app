@@ -2,31 +2,39 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../apiClient.js';
 import '../../App.css';
+import { set } from 'date-fns';
 
 function SleepLog() {
     const [prompt, setPrompt] = useState('how much u sleep?')
     const [sleepHours, setSleepHours] = useState(6);
-    const [emote, setEmote] = useState('(- _-)');
+    const [emote, setEmote] = useState('(- ‿-)');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        setIsSubmitting(true);
         e.preventDefault();
-        setPrompt('ദ്ദി(˵•̀ᴗ- ˵)✧');
-        setTimeout(() => {
-            navigate('/dash');
-        }, 1000);
+        try {
+            // send the selected mood index to the backend
+            await apiClient.post('/welcome/logmetric', { name: 'sleep', value: sleepHours });
+            // set prompt to approval emote
+            setPrompt('ദ്ദി(˵•̀ᴗ-˵)✧')
+            // redirect to dash after a short delay
+            setTimeout(() => {
+                navigate('/dash');
+            }, 1000);
+        } catch (error) {
+            console.error('Error logging metric:', error);
+        }
     }
 
     const handleSliderChange = (e) => {
         setSleepHours(e.target.value);
-        if (e.target.value < 6) {
-            setEmote('(> _<)');
-        }
-        else if (e.target.value > 6) {
-            setEmote('(- ‿-)');
+        if (e.target.value == 0) {
+            setEmote('(≖ _≖)');
         }
         else {
-            setEmote('(- _-)');
+            setEmote('(- ‿-)');
         }
     }
 
@@ -35,8 +43,8 @@ function SleepLog() {
             <p>{prompt}</p>
             <div className='horizontal-flex'>
                 <pre>
-{`
-∩___________∩
+{`   
+∩__________∩
 ||          |
 ||  ${emote}  |     
 ∣ \\    ︵︵   \\
@@ -59,7 +67,7 @@ function SleepLog() {
                     />
                     <p>{sleepHours}hrs</p>
                 </div>
-                <button type='submit'>Submit</button>
+                <button type='submit' disabled={isSubmitting}>Submit</button>
             </form>
         </div>
     )

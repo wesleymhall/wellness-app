@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../apiClient.js';
 import '../../App.css';
+import { set } from 'date-fns';
 
 function MoodLog() {
     // configure react hooks to manage state
     const [selectedMoodIndex, setSelectedMoodIndex] = useState(3);
     const [submitted, setSubmitted] = useState(false);
     const [prompt, setPrompt] = useState('how do u feel?')
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
     // array of moods
@@ -17,7 +19,7 @@ function MoodLog() {
         { id: 3, mood: '(︶︹︶)' },
         { id: 4, mood: '(・_・)' },
         { id: 5, mood: '(^ ‿ ^)' },
-        { id: 6, mood: '(≧◡≦)' },
+        { id: 6, mood: '(๑>◡<๑)' },
         { id: 7, mood: '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧' },
     ];
 
@@ -27,6 +29,7 @@ function MoodLog() {
     };
 
     const handleSubmit = async (e) => {
+        setIsSubmitting(true);
         e.preventDefault();
         const selectedMood = moods[selectedMoodIndex];
         try {
@@ -35,13 +38,13 @@ function MoodLog() {
             // set submission status to true
             setSubmitted(true);
             // set prompt to approval emote
-            setPrompt('ദ്ദി(˵•̀ᴗ- ˵)✧')
+            setPrompt('ദ്ദി(˵•̀ᴗ-˵)✧')
             // redirect to dash after a short delay
             setTimeout(() => {
                 navigate('/sleeplog');
             }, 1000);
         } catch (error) {
-            console.error('Error logging mood:', error);
+            console.error('Error logging metric:', error);
             setSubmitted(true); // set submission status to true
         }
     };
@@ -80,7 +83,7 @@ function MoodLog() {
                     );
                 })}
             </div>
-            <button onClick={handleSubmit}>Submit</button>
+            <button onClick={handleSubmit} disabled={isSubmitting}>Submit</button>
         </div>
     );
 }

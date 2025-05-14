@@ -8,7 +8,6 @@ import {
     format,
     addMonths,
     subMonths,
-    set,
 } from 'date-fns';
 
 
@@ -27,7 +26,7 @@ function Calendar() {
         { id: 3, mood: '(︶︹︶)' },
         { id: 4, mood: '(・_・)' },
         { id: 5, mood: '(^ ‿ ^)' },
-        { id: 6, mood: '(≧◡≦)' },
+        { id: 6, mood: '(๑>◡<๑)' },
         { id: 7, mood: '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧' },
     ];
 
@@ -46,6 +45,7 @@ function Calendar() {
             try {
                 const response = await apiClient.get('/dash/getlogs');
                 const metricsLogs = response.data.metrics_logs;
+                console.log(metricsLogs)
 
                 // map logs to their corresponding dates
                 const logsByDate = {};
@@ -56,7 +56,10 @@ function Calendar() {
                         if (!logsByDate[date]) {
                             logsByDate[date] = [];
                         }
-                        logsByDate[date].push(log.value); // Store log values
+                        logsByDate[date].push({
+                            value: log.value,
+                            metric: metric.metric
+                        }); // store log values
                     });
                 });
 
@@ -116,7 +119,9 @@ function Calendar() {
                             <div className='calendar-day-logs'>
                                 {logs[format(day, 'yyyy-MM-dd')].map((log, index) => (
                                     <div key={index} className='calendar-log'>
-                                        {moods.find((mood) => mood.id == log)?.mood || log}
+                                        {log.metric == 'mood' ? (
+                                            moods.find((mood) => mood.id == log.value)?.mood || log
+                                        ) : (null)}
                                     </div>
                                 ))}
                             </div>
@@ -129,6 +134,8 @@ function Calendar() {
             {showModal && selectedDay && (
                 <MetricsModal
                     onClose={handleModalClose}
+                    selectedDay={selectedDay}
+                    logs={logs}
                 />
             )}
         </div>

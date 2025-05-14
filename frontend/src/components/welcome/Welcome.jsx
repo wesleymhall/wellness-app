@@ -23,7 +23,6 @@ function Welcome () {
             const today = format(new Date(), 'yyyy-MM-dd'); 
             const response = await apiClient.get('/dash/getlogs'); 
             const metricLogs = response.data.metrics_logs;
-            console.log('metricLogs:', metricLogs)
 
             // check if any logs exist for today
             const hasLogs = metricLogs.some((metric) =>

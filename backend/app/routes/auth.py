@@ -17,12 +17,12 @@ def register():
 
     # validate input
     if not username or not password:
-        return jsonify({'error': 'Username and password are required'}), 400
+        return jsonify({'error': 'username and password are required'}), 400
 
     # check if user already exists
     user = User.query.filter_by(username=username).first()
     if user:
-        return jsonify({'error': 'User already exists'}), 400
+        return jsonify({'error': 'user already exists'}), 400
     
     # hash the password
     hashed_password = hash_password(password)
@@ -32,7 +32,7 @@ def register():
     db.session.add(new_user)
     db.session.commit()
     
-    return jsonify({'message': 'User registered successfully'}), 201
+    return jsonify({'message': 'user registered successfully'}), 201
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -44,20 +44,20 @@ def login():
 
     # validate input
     if not username or not password:
-        return jsonify({'error': 'Username and password are required'}), 400
+        return jsonify({'error': 'username and password are required'}), 400
 
     # check if user exists and verify password
     # use first to get a single user object
     user = User.query.filter_by(username=username).first()
     if not user or not verify_password(user.password_hash, password):
-        return jsonify({'error': 'Invalid username or password'}), 400
+        return jsonify({'error': 'invalid username or password'}), 400
     
     # create session for user
     session['username'] = username
     session.modified = True 
     print('Session after login:', session)
     
-    return jsonify({'message': 'User logged in successfully'}), 200
+    return jsonify({'message': 'user logged in successfully'}), 200
 
 
 @auth_bp.route('/logout', methods=['POST'])
@@ -66,7 +66,7 @@ def logout():
     # if username is not in session, do nothing
     session.pop('username', None)
     
-    return jsonify({'message': 'User logged out successfully'}), 200
+    return jsonify({'message': 'user logged out successfully'}), 200
 
 
 @auth_bp.route('/session', methods=['GET'])
