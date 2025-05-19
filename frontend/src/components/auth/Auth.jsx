@@ -1,6 +1,6 @@
 import apiClient from '../../apiClient.js';
-import Login from './Login';
-import Register from './Register';
+import Login from './Login.jsx';
+import Register from './Register.jsx';
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
@@ -33,12 +33,27 @@ function Auth() {
 
     // if logged in, navigate to home page
     if (isLoggedIn) {
-        return <Navigate to='/welcome' />;
+        return <Navigate to='/log' />;
     };
 
     // return JSX to render
     return (
+        <div className='horizontal-flex'>
         <div className='vertical-flex'>
+<pre className={'ascii-art'}>
+{String.raw`
+                          ████                                            
+                          ████                                            
+                         ░░███                                            
+ █████ ███ █████  ██████  ░███   ██████   ██████  █████████████    ██████ 
+░░███ ░███░░███  ███░░███ ░███  ███░░███ ███░░███░░███░░███░░███  ███░░███
+ ░███ ░███ ░███ ░███████  ░███ ░███ ░░░ ░███ ░███ ░███ ░███ ░███ ░███████ 
+ ░░███████████  ░███░░░   ░███ ░███  ███░███ ░███ ░███ ░███ ░███ ░███░░░  
+  ░░████░████   ░░██████  █████░░██████ ░░██████  █████░███ █████░░██████  
+   ░░░░ ░░░░     ░░░░░░  ░░░░░  ░░░░░░   ░░░░░░  ░░░░░ ░░░ ░░░░░  ░░░░░░  
+`}
+
+</pre>
             {isRegistering ? (
                 <>
                     {/* if registering */}
@@ -46,8 +61,7 @@ function Auth() {
                     {/* props are used to pass data and logic to child components */}
                     <Register toggleRegister={toggleRegister} />
                     <p>
-                        already have an account?{' '}
-                        <button onClick={toggleRegister}>login</button>
+                        <button onClick={toggleRegister}>already joined?</button>
                     </p>
                 </>
             ) : (
@@ -56,11 +70,11 @@ function Auth() {
                     {/* render Login component and pass checkSession as prop*/}
                     <Login onLogin={checkSession} />
                     <p>
-                        don't have an account?{' '}
-                        <button onClick={toggleRegister}>register</button>
+                        <button onClick={toggleRegister}>wanna join?</button>
                     </p>
                 </>
             )}
+        </div>
         </div>
     );
 }

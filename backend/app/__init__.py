@@ -25,10 +25,11 @@ def create_app():
     db.init_app(app)
     
     # register blueprints from routes/__init__.py
-    from .routes import auth_bp, dash_bp, welcome_bp
+    from .routes import auth_bp, dash_bp, welcome_bp, log_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(dash_bp, url_prefix='/dash')
     app.register_blueprint(welcome_bp, url_prefix='/welcome')
+    app.register_blueprint(log_bp, url_prefix='/log')
 
     # return app instance
     return app

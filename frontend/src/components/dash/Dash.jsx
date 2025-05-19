@@ -5,12 +5,14 @@ import Calendar from './Calendar.jsx';
 function Dash () {
     // return JSX to render
     return (
-        <>
+        <div className='vertical-flex'>
             {/* render Calendar component */}
             <Calendar />
             {/* render Logout component */}
-            <Logout />
-        </>
+            <div className='centered-bottom'>
+                <Logout />
+            </div>
+        </div>
     );
 }
 

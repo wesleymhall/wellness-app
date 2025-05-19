@@ -1,26 +1,41 @@
 import './App.css';
-import Auth from "./components/auth/Auth.jsx";
-import Dash from "./components/dash/Dash.jsx";
-import Welcome from "./components/welcome/Welcome.jsx";
-import MoodLog from "./components/welcome/MoodLog.jsx";
-import SleepLog from "./components/welcome/SleepLog.jsx";
-import { Routes, Route, Navigate } from "react-router-dom";
+import Auth from './components/auth/Auth.jsx';
+import Dash from './components/dash/Dash.jsx';
+import WelcomeLog from './components/welcome/WelcomeLog.jsx';
+import Log from './components/welcome/Log.jsx';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import {emotions, sleeps} from './Metrics.js';
 
 
 function App() {
-  // return JSX to render
   return (
     <>
-      {/* define routes for the app */}
+    <img src='/images/gif.gif' className='gif-container'/>
+    {/* define routes for the app */}
+    <div className='centered'>
+    <div className='app-container'>
       <Routes>
         {/* default route directs to auth */}
-        <Route path='/' element={<Navigate to="/auth" />} />
-        <Route path='/auth' element={<Auth />} />
-        <Route path='/welcome' element={<Welcome />} />
+        <Route path='/' element={<Navigate to="/welcome" />} />
+        <Route path='/welcome' element={<Auth />} />
+        <Route path='/log' element={<WelcomeLog />} />
         <Route path='/dash' element={<Dash />} />
-        <Route path='/moodlog' element={<MoodLog />} />
-        <Route path='/sleeplog' element={<SleepLog />} />
+        {/* daily log routes */}
+        <Route path='/how do u feel' element={<Log 
+          metric='emotion' 
+          array={emotions} 
+          prompt='how do u feel?'
+          destination='/how much u sleep'
+        />} />
+        <Route path='/how much u sleep' element={<Log 
+          metric='sleep'
+          array={sleeps}
+          prompt='how much u sleep?'
+          destination='/dash'
+        />} />
       </Routes>
+    </div>
+    </div>
     </>
   );
 }

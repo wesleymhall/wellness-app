@@ -30,8 +30,7 @@ function Login({ onLogin }) {
     // return JSX to render
     return (
         <div>
-            <h2>login</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className='vertical-flex'>
                 <input
                 type='text'
                 placeholder='username'
@@ -44,7 +43,7 @@ function Login({ onLogin }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type='submit'>login</button>
+                <button type='submit'>sign in</button>
             </form>
             {/* if message is not empty, display it */}
             {message && <p>{message}</p>}

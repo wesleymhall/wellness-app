@@ -30,8 +30,7 @@ function Register({ toggleRegister }) {
     // return JSX to render
     return (
         <div>
-            <h2>register</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className='vertical-flex'>
                 <input
                 type="text"
                 placeholder="username"
@@ -44,7 +43,7 @@ function Register({ toggleRegister }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">register</button>
+                <button type="submit">sign up</button>
             </form>
             {/* if message is not empty, display it */}
             {message && <p>{message}</p>}

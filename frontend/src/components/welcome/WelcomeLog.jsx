@@ -4,10 +4,10 @@ import { format } from 'date-fns';
 import { Navigate } from 'react-router-dom';
 
 
-function Welcome () {
-    // useState hook to manage user state
+function WelcomeLog () {
     const [user, setUser] = useState('');
     const [hasLogsToday, setHasLogsToday] = useState(false);
+    // userAuth asks if user has time for log
     const [userAuth, setUserAuth] = useState(null);
     const [emote, setEmote] = useState('(˶ᵔᵕᵔ˶)')
 
@@ -27,32 +27,35 @@ function Welcome () {
             // check if any logs exist for today
             const hasLogs = metricLogs.some((metric) =>
                 metric.logs.some((log) => {
+                    // convert log timestamp to date string without time
                     const logDate = new Date(log.timestamp).toISOString().split('T')[0];
                     return logDate === today;
                 })
             );
             setHasLogsToday(hasLogs);
         } catch (error) {
-            console.error('Error checking logs:', error);
+            console.error('error checking logs:', error);
     }};
 
+    // get user name
     const getUser = async (e) => {
         try {
-            // use axios instance with endpoint
             const response = await apiClient.get('/welcome/getuser');
             // if success, set user state with username
             setUser(response.data.username)
         } catch (error) { 
-            console.error('Error fetching user:', error);
+            console.error('error getting user:', error);
         }
     };
 
+    // if user says no, set emote to sad
     const checkUserAuth = () => {
         if (userAuth == false) {
             setEmote('(ಥ﹏ಥ)')
         }
     };
 
+    // check userAuth state when it changes
     useEffect(() => {
         if (userAuth !== null) {
             checkUserAuth();
@@ -64,14 +67,14 @@ function Welcome () {
         return <Navigate to='/dash' />;
     }
 
+    // if user says yes, redirect to emotion log
     if (userAuth == true) {
-        return <Navigate to='/moodlog' />
+        return <Navigate to='/how do u feel' />
     }
 
-    // return JSX to render
     return (
         <div className='vertical-flex'>
-            {/* Welcome user */}
+            {/* welcome user and ask for auth to log */}
             <p>hi {user} {emote}</p>
             <p>got a sec?</p>
             <div>
@@ -82,5 +85,4 @@ function Welcome () {
     );
 }
 
-// export functional component for import
-export default Welcome;
+export default WelcomeLog;
