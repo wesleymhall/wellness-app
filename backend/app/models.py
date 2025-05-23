@@ -29,6 +29,6 @@ class Log(db.Model):
     # initialise columns
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.Date, nullable=False, default=date.today)
+    timestamp = db.Column(db.Date, nullable=False)
     # foreign key
     metric_id = db.Column(db.Integer, db.ForeignKey('metrics.id',  ondelete='CASCADE'), nullable=False)

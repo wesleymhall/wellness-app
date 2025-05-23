@@ -61,7 +61,7 @@ function Auth() {
                     {/* props are used to pass data and logic to child components */}
                     <Register toggleRegister={toggleRegister} />
                     <p>
-                        <button onClick={toggleRegister}>already joined?</button>
+                        <button onClick={toggleRegister}>login?</button>
                     </p>
                 </>
             ) : (
@@ -70,7 +70,7 @@ function Auth() {
                     {/* render Login component and pass checkSession as prop*/}
                     <Login onLogin={checkSession} />
                     <p>
-                        <button onClick={toggleRegister}>wanna join?</button>
+                        <button onClick={toggleRegister}>register?</button>
                     </p>
                 </>
             )}

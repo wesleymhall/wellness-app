@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../apiClient.js';
+import { format } from 'date-fns';
 
 
 function Log({metric, array, prompt, destination}) {
-    const [selectedMetricIndex, setSelectedMetricIndex] = useState(Math.floor(array.length / 2));
+    const [selectedMetricIndex, setSelectedMetricIndex] = useState(Math.floor(array.length / 2) - 1);
     const [submitted, setSubmitted] = useState(false);
     const [currentPrompt, setCurrentPrompt] = useState(prompt)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,7 +16,7 @@ function Log({metric, array, prompt, destination}) {
         setIsSubmitting(false);
         setSubmitted(false);
         setCurrentPrompt(prompt);
-        setSelectedMetricIndex(Math.floor(array.length / 2));
+        setSelectedMetricIndex(Math.floor(array.length / 2) - 1);
     }, [metric, array, prompt]);
 
     // set selected mood to the index clicked
@@ -27,9 +28,10 @@ function Log({metric, array, prompt, destination}) {
         setIsSubmitting(true);
         e.preventDefault();
         const selectedMetric = array[selectedMetricIndex];
+        const today = format(new Date(), 'yyyy-MM-dd');
         try {
             // send selected metric id to backend API
-            await apiClient.post('/log/logmetric', { name: metric, value: selectedMetric.id });
+            await apiClient.post('/log/logmetric', { name: metric, value: selectedMetric.id, date: today });
             // set submission status to true
             setSubmitted(true);
             // set prompt to approval emote
@@ -78,12 +80,12 @@ function Log({metric, array, prompt, destination}) {
                                     : Math.abs(position) > 2
                                     ? 0
                                     : 1,
-                            }}
+                            }}xw
                             onClick={() => handleMetricSelect(index)}
                         >
                             {/* metric centered, id centered bottom */}
                             <p className='centered'>{metric.emote}</p>
-                            <p className='centered-bottom' style={{ fontSize: '12px', opacity: isSelected ? 1 : 0}}>{metric.id}/{array.length - 1}</p>
+                            <p className='centered-bottom' style={{ fontSize: '12px', opacity: isSelected ? 1 : 0}}>{metric.id}/{array.length}</p>
                         </div>
                     );
                 })}

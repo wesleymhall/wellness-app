@@ -73,6 +73,7 @@ function WelcomeLog () {
     }
 
     return (
+        <div className='horizontal-flex'>
         <div className='vertical-flex'>
             {/* welcome user and ask for auth to log */}
             <p>hi {user} {emote}</p>
@@ -81,6 +82,7 @@ function WelcomeLog () {
                 <button onClick={() => setUserAuth(true)}>yes</button>
                 <button onClick={() => setUserAuth(false)}>no</button>
             </div>
+        </div>
         </div>
     );
 }

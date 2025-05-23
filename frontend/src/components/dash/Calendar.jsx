@@ -18,6 +18,7 @@ function Calendar() {
     const [logs, setLogs] = useState({});
     const [selectedDay, setSelectedDay] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [hasUpdates, setHasUpdates] = useState(false);
 
     // set month bounds
     const monthStart = startOfMonth(currentMonth);
@@ -69,7 +70,7 @@ function Calendar() {
         setCurrentMonth((prev) => subMonths(prev, 1));
     };
 
-    // handle day select and show modal
+    // dynamic log changes
     const handleDaySelect = (day) => {
         setSelectedDay(day);
         setShowModal(true);
@@ -77,6 +78,20 @@ function Calendar() {
     const handleModalClose = () => {
         setSelectedDay(null);
         setShowModal(false);
+    }
+    const handleSave = (updatedLogs) => {
+        setLogs(updatedLogs);
+        setHasUpdates(true);
+    }
+    // commit to db
+    const handleCommit = () => {
+        // unpackage logs array into its date and logs components
+        Object.entries(logs).forEach(([date, dateLogs]) => {
+            // post each log to db
+            dateLogs.forEach(async (log) => {
+                await apiClient.post('/log/logmetric', {name: log['metric'], value: log['value'], date: date})
+            })
+        });
     }
 
     return (
@@ -90,10 +105,12 @@ function Calendar() {
             {/* days grid */}
             <div className='calendar-grid'>
                 {/* render each day */}
-                {days.map((day) => (
+                {days.map((day) => {
+                    const isSelected = format(day, 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd');
+                    return (
                     <div 
                         key={day.toISOString()} 
-                        className='calendar-day'
+                        className={`calendar-day ${isSelected ? 'selected' : ''}`}
                         onClick={() => handleDaySelect(day)}
                     >
                         {/* if day has logs, render mood emote */}
@@ -109,7 +126,8 @@ function Calendar() {
                             </div>
                         ) : (null)}
                     </div>
-                ))}
+                    );
+                })}
             </div>
             {/* if showModal and selectedDay, render metrics modal */}
             {showModal && selectedDay && (
@@ -117,7 +135,18 @@ function Calendar() {
                     onClose={handleModalClose}
                     selectedDay={selectedDay}
                     logs={logs}
+                    onSave={handleSave}
                 />
+            )}
+            {/* if hasUpdates, prompt user to commit */}
+            {hasUpdates && (
+                <div>
+                    <button
+                        onClick={handleCommit}
+                    >
+                        commit
+                    </button>
+                </div>
             )}
         </div>
     );

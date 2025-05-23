@@ -26,7 +26,6 @@ def register():
     new_user = User(username=username, password_hash=hashed_password)
     db.session.add(new_user)
     db.session.commit()
-    
     return jsonify({'message': 'user registered successfully'}), 201
 
 
@@ -48,7 +47,6 @@ def login():
     session['username'] = username
     session.modified = True 
     print('Session after login:', session)
-    
     return jsonify({'message': 'user logged in successfully'}), 200
 
 
@@ -56,15 +54,13 @@ def login():
 def logout():
     # remove user session
     session.pop('username', None)
-    
     return jsonify({'message': 'user logged out successfully'}), 200
 
 
 @auth_bp.route('/session', methods=['GET'])
 def check_session():
-    #session.pop('username', None)
+    # session.pop('username', None)
     # check if user is logged in
     if 'username' in session:
         return jsonify({'isLoggedIn': True, 'username': session['username']}), 200
-    
     return jsonify({'isLoggedIn': False}), 200

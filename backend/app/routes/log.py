@@ -1,6 +1,7 @@
 from app import db
 from app.models import User, Metric, Log
 from flask import Blueprint, request, jsonify, session
+from datetime import datetime
 
 log_bp = Blueprint('log', __name__)
 
@@ -13,10 +14,15 @@ def log_metric():
     # get metric name and value from request
     name = request.get_json().get('name')
     value = request.get_json().get('value')
+    date_str = request.get_json().get('date')
+    # convert data to python date object
+    date = datetime.strptime(date_str, '%Y-%m-%d').date()
     if not name:
         return jsonify({'error': 'name not provided'}), 400
     if not value:
         return jsonify({'error': 'value not provided'}), 400
+    if not date:
+        return jsonify({'error': 'date not provided'}), 400
     # get username from session
     username = session['username']
     # query user from database
@@ -29,9 +35,18 @@ def log_metric():
         metric = Metric(name=name, user_id=user.id)
         db.session.add(metric)
         db.session.commit()
-    # create a log entry for the mood
-    log = Log(value=value, metric_id=metric.id)
-    db.session.add(log)
+    # query for old log of metric on the date
+    print(date)
+    oldlog = Log.query.filter_by(timestamp=date, metric_id=metric.id).first()
+    if oldlog:
+        # return if log exists
+        if oldlog.value == value:
+            return jsonify({'message': 'redundant metric ignored'}), 200
+        # else delete old log
+        db.session.delete(oldlog)
+    # create a new log object
+    newlog = Log(value=value, timestamp=date, metric_id=metric.id)
+    db.session.add(newlog)
     # commit the changes to the database
     db.session.commit()
 
