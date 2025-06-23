@@ -53,13 +53,13 @@ def login():
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
     # remove user session
-    session.pop('username', None)
+    session.pop('username', None) 
     return jsonify({'message': 'user logged out successfully'}), 200
 
-
+ 
 @auth_bp.route('/session', methods=['GET'])
 def check_session():
-    # session.pop('username', None)
+    #session.pop('username', None)
     # check if user is logged in
     if 'username' in session:
         return jsonify({'isLoggedIn': True, 'username': session['username']}), 200

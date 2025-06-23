@@ -10,7 +10,7 @@ import {emotions, sleeps} from './Metrics.js';
 function App() {
   return (
     <>
-    <img src='/images/gif.gif' className='gif-container'/>
+    {/* <img src='/images/gif.gif' className='gif-container'/> */}
     {/* define routes for the app */}
     <div className='centered'>
     <div className='app-container'>

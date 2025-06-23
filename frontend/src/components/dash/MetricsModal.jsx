@@ -1,18 +1,16 @@
 import * as Metrics from '../../Metrics.js';
-import { format } from 'date-fns';
 import { useState } from 'react';
 
 function MetricsModal({ onClose, selectedDay, logs, onSave }) {
     // deep clone logs to avoid mutating original logs
     const [cloneLogs, setCloneLogs] = useState(JSON.parse(JSON.stringify(logs)));
-    const fselectedDay = format(selectedDay, 'yyyy-MM-dd');
     const emojis = {
         emotion: '😊',
         sleep: '😴',
     };
     // if selected day does not exist in logs, create it
-    if (!cloneLogs[fselectedDay]) {
-        cloneLogs[fselectedDay] = [
+    if (!cloneLogs[selectedDay]) {
+        cloneLogs[selectedDay] = [
             { metric: 'emotion', value: 0 },
             { metric: 'sleep', value: 0 }
         ];
@@ -21,7 +19,7 @@ function MetricsModal({ onClose, selectedDay, logs, onSave }) {
         <div className='modal-overlay'>
             <div className='modal-content'>
             <div className='vertical-flex'>
-                {cloneLogs[fselectedDay].map((log, index) => {
+                {cloneLogs[selectedDay].map((log, index) => {
                     const metricArray = Metrics[log.metric + 's'];
                     return (
                         <div key={index} className='horizontal-full'>
@@ -47,7 +45,7 @@ function MetricsModal({ onClose, selectedDay, logs, onSave }) {
                     <button onClick={onClose}>close</button>
                     <button 
                         onClick={() => {
-                            onSave(cloneLogs);
+                            onSave(cloneLogs, selectedDay);
                             onClose();
                         }}
                     >
@@ -55,9 +53,9 @@ function MetricsModal({ onClose, selectedDay, logs, onSave }) {
                     </button>
                     <button
                         onClick={() => {
-                            delete cloneLogs[fselectedDay];
+                            delete cloneLogs[selectedDay];
                             setCloneLogs({ ...cloneLogs });
-                            onSave(cloneLogs);
+                            onSave(cloneLogs, selectedDay);
                             onClose();
                         }}
                     >

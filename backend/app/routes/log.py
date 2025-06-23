@@ -11,11 +11,11 @@ def log_metric():
     # check if user is logged in
     if 'username' not in session:
         return jsonify({'error': 'user not logged in'}), 401
-    # get metric name and value from request
+    # get metric name, value, and date from request
     name = request.get_json().get('name')
     value = request.get_json().get('value')
     date_str = request.get_json().get('date')
-    # convert data to python date object
+    # convert date to python date object
     date = datetime.strptime(date_str, '%Y-%m-%d').date()
     if not name:
         return jsonify({'error': 'name not provided'}), 400
@@ -51,3 +51,33 @@ def log_metric():
     db.session.commit()
 
     return jsonify({'message': 'metric logged successfully'}), 200
+
+
+@log_bp.route('/deletelog', methods=['DELETE'])
+def delete_log():
+    # check if user is logged in
+    if 'username' not in session:
+        return jsonify({'error': 'user not logged in'}), 401
+    # get date from request
+    date_str = request.get_json().get('date')
+    # convert date to python date object
+    date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    if not date:
+        return jsonify({'error': 'date not provided'}), 400
+    # get username from session
+    username = session['username']
+    # query user from database
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({'error': 'user not found'}), 404
+    # get all metrics for user
+    metrics = Metric.query.filter_by(user_id=user.id).all()
+    # delete logs for metric on date
+    for metric in metrics:
+        date_logs = Log.query.filter_by(metric_id=metric.id, timestamp=date).all()
+        for log in date_logs:
+            db.session.delete(log)
+    # commit the changes to the database
+    db.session.commit()
+
+    return jsonify({'message': f'logs deleted for {date_str}'}), 200
