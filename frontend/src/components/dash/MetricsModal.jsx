@@ -1,29 +1,27 @@
-import * as Metrics from '../../Metrics.js';
+import { metricConfig } from '../../Metrics.js';
 import { useState } from 'react';
 
 function MetricsModal({ onClose, selectedDay, logs, onSave }) {
     // deep clone logs to avoid mutating original logs
     const [cloneLogs, setCloneLogs] = useState(JSON.parse(JSON.stringify(logs)));
-    const emojis = {
-        emotion: '😊',
-        sleep: '😴',
-    };
     // if selected day does not exist in logs, create it
     if (!cloneLogs[selectedDay]) {
-        cloneLogs[selectedDay] = [
-            { metric: 'emotion', value: 0 },
-            { metric: 'sleep', value: 0 }
-        ];
-    };
+        cloneLogs[selectedDay] = Object.keys(metricConfig).map((metricName) => ({
+          metric: metricName,
+          value: 1,
+        }));
+    }
     return (
         <div className='modal-overlay'>
             <div className='modal-content'>
             <div className='vertical-flex'>
+                <div>{selectedDay}</div>
                 {cloneLogs[selectedDay].map((log, index) => {
-                    const metricArray = Metrics[log.metric + 's'];
+                    const config = metricConfig[log.metric];
+                    const metricArray = config.array;
                     return (
                         <div key={index} className='horizontal-full'>
-                            <p>{emojis[log.metric] ? emojis[log.metric] : null}</p>
+                            <p>{config.emoji}</p>
                             <input
                                 type='range'
                                 min='1'
@@ -31,7 +29,7 @@ function MetricsModal({ onClose, selectedDay, logs, onSave }) {
                                 step='1'
                                 value={log.value}
                                 onChange={(e) => {
-                                    log.value = e.target.value;
+                                    log.value = Number(e.target.value);
                                     // shallow clone cloneLogs to allow for state update before save
                                     // does not matter if original clone logs is mutated
                                     setCloneLogs({ ...cloneLogs });

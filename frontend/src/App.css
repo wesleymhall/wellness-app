@@ -8,8 +8,10 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    color: #333
 }
 button, input, select, textarea {
+    border-color: #fff;
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
@@ -82,6 +84,14 @@ button, input, select, textarea {
     position: relative;
     width: 100%;
 }
+.horizontal-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
 /* for making absolute elements relative */
 .flex-container {
     display: flex;
@@ -99,7 +109,7 @@ button, input, select, textarea {
     background-color: #fff;
     width: 120px;
     height: 150px;
-    border: 1px solid #000;
+    border: 1px solid #333;
     border-radius: 5px;
     cursor: pointer;
     transition: transform 0.3s, z-index 0.3s, opacity 0.3s;
@@ -123,7 +133,7 @@ button, input, select, textarea {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #000;
+    border: 1px solid #333;
     border-radius: 4px;
     background-color: #fff;
     font-size: 1rem;

@@ -25,9 +25,38 @@ const sleeps = [
     { id: 10, emote: '( ˘ ³˘)♡💤' },
 ];
 
-const emojis = {
-    emotion: '😊',
-    sleep: '😴',
+const selfcares = [
+    { id: 1, emote: '(×_×;)' },
+    { id: 2, emote: '(;¬_¬)' },
+    { id: 3, emote: '(¬_¬")' },
+    { id: 4, emote: '(・_・)' },
+    { id: 5, emote: '(＾_＾)' },
+    { id: 6, emote: '(｡•ᴗ•｡)' },
+    { id: 7, emote: '(＾▽＾)🧴' },
+    { id: 8, emote: '(｡•̀ᴗ-)✧🛁' },
+    { id: 9, emote: '(๑˃ᴗ˂)ﻭ ✨' },
+    { id: 10, emote: '(˘ᵕ˘)🌿✨' },
+];
+
+const metricConfig = {
+    'emotion' : {
+        prompt: 'how do u feel?',
+        emoji: '🙂',
+        array: emotions,
+        color: 'rgb(205, 135, 141)',
+    },
+    'sleep' : {
+        prompt: 'how was ur sleep?',
+        emoji: '💤',
+        array: sleeps,
+        color: 'rgb(135, 194, 205)',
+    },
+    'selfcare' : {
+        prompt: 'selfcare, hygiene, routines?',
+        emoji: '🛀',
+        array: selfcares,
+        color: 'rgb(135, 205, 147)',
+    }
 }
 
-export { emotions, sleeps, emojis };
+export { metricConfig };

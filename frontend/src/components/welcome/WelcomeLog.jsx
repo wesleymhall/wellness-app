@@ -2,6 +2,8 @@ import apiClient from '../../apiClient.js';
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Navigate } from 'react-router-dom';
+import { metricConfig } from '../../Metrics.js';
+
 
 
 function WelcomeLog () {
@@ -69,7 +71,7 @@ function WelcomeLog () {
 
     // if user says yes, redirect to emotion log
     if (userAuth == true) {
-        return <Navigate to='/how do u feel' />
+        return <Navigate to={`/log/${Object.keys(metricConfig)[0]}`} />
     }
 
     return (

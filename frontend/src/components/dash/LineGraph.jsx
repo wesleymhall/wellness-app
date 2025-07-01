@@ -1,15 +1,5 @@
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
+import { ResponsiveLine } from '@nivo/line';
+import { metricConfig } from '../../Metrics.js';
 
 
 function LineGraph({ logEntries, days }) {
@@ -41,40 +31,74 @@ function LineGraph({ logEntries, days }) {
             metricsData[metric].push(metricValue[metric] !== undefined ? metricValue[metric] : undefined)
         });
     });
-    // configure line graph
-    const data = {
-      labels: days,
-      datasets: Object.entries(metricsData).map(([label, data]) => ({
-        label: label,
-        data: data,
-        borderColor: 'rgb(0,0,0)',
-        tension: 0.4,
-        borderWidth: 1,
-        pointRadius: 0,
-        spanGaps: true,
-      })),
-    };
-    const options = {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            display: false,
-          },
-        },
-        y: {
-          min: 1,
-          max: 10,
-        },
-      },
-    };    
-    return <Line data={data} options={options} />;
-  }
-  
-  export default LineGraph;
-  
+    // format data for line graph
+    const fdata = Object.entries(metricsData).map(([metric, data]) => ({
+        id: metric,
+        data: data.map((value, index) => ({
+            x: days[index],
+            y: value
+        }))
+    }));
+    // format legend data to allow custom emoji
+    const legendData = fdata.map(({ id }) => ({
+        id,
+        label: metricConfig[id].emoji,
+        color: metricConfig[id].color,
+    }));
+    return (
+        <div style={{ height: 400, width: '100%' }}>
+            <ResponsiveLine 
+                data={fdata}
+                xScale={{ type: 'point' }}
+                yScale={{ type: 'linear', min: 1, max: 10}}
+                colors={({ id }) => metricConfig[id].color}
+                useMesh={true}
+                axisBottom={{
+                    tickSize: 12,
+                    format: (value) => {
+                        const parts = value.split('-')
+                        return `${parseInt(parts[2])}`
+                    }
+                }}
+                axisLeft={{
+                    tickSize: 12,
+                }}
+                legends={[
+                    {
+                        anchor: 'top-right',
+                        direction: 'column',
+                        justify: false,
+                        translateX: 53,
+                        translateY: 0,
+                        itemsSpacing: 15,
+                        itemDirection: 'left-to-right',
+                        itemWidth: 40,
+                        itemHeight: 20,
+                        itemOpacity: 0.75,
+                        symbolSize: 12,
+                        symbolShape: 'circle',
+                        data: legendData,
+                    }
+                ]}
+                margin={{ top: 25, right: 50, bottom: 40, left: 32 }}
+                theme={{
+                    axis: {
+                        ticks: {
+                            text: {
+                                fontSize: 12,
+                            }
+                        }
+                    },
+                    legends: {
+                        text: {
+                            fontSize: 16,
+                        }
+                    }
+                }}
+                animate={null}
+            />
+        </div>
+    )
+}
+
+export default LineGraph

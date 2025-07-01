@@ -1,12 +1,13 @@
 from app import db
 from app.models import User, Metric, Log
+from app.analytics import correlation
 from flask import Blueprint, jsonify, session 
 
 dash_bp = Blueprint('dash', __name__)
 
 
 @dash_bp.route('/getlogs', methods=['GET'])
-def get_metrics():
+def get_logs():
     # check if user is logged in
     if 'username' not in session:
         return jsonify({'error': 'user not logged in'}), 401
@@ -24,6 +25,13 @@ def get_metrics():
         logs = Log.query.filter_by(metric_id=metric.id).all()
         logs_data = [{'id': log.id, 'value': log.value, 'timestamp': log.timestamp} for log in logs]
         metrics_logs.append({'metric': metric.name, 'logs': logs_data})
+    # get correlation analytics
+    correlations = correlation.get_correlations(user.id)
     
     # return metrics logs as JSON
-    return jsonify({'metrics_logs': metrics_logs}), 200
+    return jsonify({
+        'metrics_logs': metrics_logs,
+        'analytics': {
+            'correlations': correlations
+        }
+    }), 200

@@ -36,7 +36,6 @@ def log_metric():
         db.session.add(metric)
         db.session.commit()
     # query for old log of metric on the date
-    print(date)
     oldlog = Log.query.filter_by(timestamp=date, metric_id=metric.id).first()
     if oldlog:
         # return if log exists

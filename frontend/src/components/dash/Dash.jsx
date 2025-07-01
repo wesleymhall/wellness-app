@@ -2,6 +2,7 @@ import apiClient from '../../apiClient.js';
 import Logout from '../auth/Logout.jsx';
 import Calendar from './Calendar.jsx';
 import LineGraph from './LineGraph.jsx';
+import CorrelationHeatMap from './CorrelationHeatMap.jsx';
 import { useState, useEffect } from 'react';
 import { 
     startOfMonth,
@@ -15,6 +16,7 @@ import {
 
 function Dash () {
     const [logs, setLogs] = useState({});
+    const [correlation, setCorrelation] = useState(null);
     // set default month to current date
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [refreshLogs, setRefreshLogs] = useState(false);
@@ -39,13 +41,15 @@ function Dash () {
         end: monthEnd,
     }).map(day => format(day, 'yyyy-MM-dd'));
 
-    // get logs on component render
+    // get logs and analytics on component render and log refresh
     useEffect(() => {
         const getLogs = async () => {
             try {
                 const response = await apiClient.get('/dash/getlogs');
                 const metricsLogs = response.data.metrics_logs;
-
+                // get correlation analytics
+                const correlation = response.data.analytics.correlations;
+                setCorrelation(correlation)
                 // map logs to dates
                 const logsByDate = {};
                 metricsLogs.forEach((metric) => {
@@ -69,11 +73,15 @@ function Dash () {
             }
         };
         getLogs();
-    }, [refreshLogs]);
+    }, [refreshLogs]);  
     return (
         <>
         <div className='horizontal-flex'>
             <div className='vertical-flex'>
+                <div className='horizontal-space-between'>
+                    <button>≡</button>
+                    <Logout/>
+                </div>
                 {/* month navigation */}
                 <div className='horizontal-space-between'>
                     <button onClick={goToPreviousMonth}>&lt;</button>
@@ -87,7 +95,8 @@ function Dash () {
                     triggerRefresh={() => setRefreshLogs(prev => !prev)}
                 />
                 <LineGraph logEntries={logs} days={daysArray}/>
-                <Logout />
+                {/* render heatmap conditionally */}
+                {correlation ? <CorrelationHeatMap data={correlation} /> : null}
             </div>
         </div>
         </>

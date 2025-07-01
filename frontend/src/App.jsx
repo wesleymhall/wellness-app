@@ -4,7 +4,7 @@ import Dash from './components/dash/Dash.jsx';
 import WelcomeLog from './components/welcome/WelcomeLog.jsx';
 import Log from './components/welcome/Log.jsx';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import {emotions, sleeps} from './Metrics.js';
+import { metricConfig } from './Metrics.js';
 
 
 function App() {
@@ -20,19 +20,27 @@ function App() {
         <Route path='/welcome' element={<Auth />} />
         <Route path='/log' element={<WelcomeLog />} />
         <Route path='/dash' element={<Dash />} />
-        {/* daily log routes */}
-        <Route path='/how do u feel' element={<Log 
-          metric='emotion' 
-          array={emotions} 
-          prompt='how do u feel?'
-          destination='/how much u sleep'
-        />} />
-        <Route path='/how much u sleep' element={<Log 
-          metric='sleep'
-          array={sleeps}
-          prompt='how much u sleep?'
-          destination='/dash'
-        />} />
+        {/* dynamic daily log routes */}
+        {Object.entries(metricConfig).map(([name, config], index, arr) => {
+          const path = `/log/${name}`;
+          const nextPath = index + 1 < arr.length
+            ? `/log/${arr[index + 1][0]}`
+            : '/dash';
+          return (
+            <Route
+              key={name}
+              path={path}
+              element={
+                <Log
+                  metric={name}
+                  array={config.array}
+                  prompt={config.prompt}
+                  destination={nextPath}
+                />
+              }
+            />
+          )
+        })}
       </Routes>
     </div>
     </div>

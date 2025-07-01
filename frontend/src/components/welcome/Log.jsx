@@ -36,7 +36,7 @@ function Log({metric, array, prompt, destination}) {
             setSubmitted(true);
             // set prompt to approval emote
             setCurrentPrompt('ദ്ദി(˵•̀ᴗ-˵)✧')
-            // redirect to sleep log after a short delay
+            // redirect to destination after a short delay
             setTimeout(() => {
                 // navigate to next destination
                 navigate(destination);
@@ -80,7 +80,7 @@ function Log({metric, array, prompt, destination}) {
                                     : Math.abs(position) > 2
                                     ? 0
                                     : 1,
-                            }}xw
+                            }}
                             onClick={() => handleMetricSelect(index)}
                         >
                             {/* metric centered, id centered bottom */}
