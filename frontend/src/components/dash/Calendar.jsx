@@ -2,12 +2,42 @@ import apiClient from '../../apiClient.js';
 import MetricsModal from './MetricsModal';
 import { useState, useEffect } from 'react';
 import { metricConfig } from '../../Metrics.js';
+import { 
+    startOfMonth,
+    endOfMonth,
+    eachDayOfInterval,
+    format,
+    addMonths,
+    subMonths,
+} from 'date-fns';
 
 
-function Calendar({ logEntries, days, triggerRefresh }) {
+function Calendar({ logEntries, triggerRefresh }) {
     const [logs, setLogs] = useState(logEntries);
     const [selectedDay, setSelectedDay] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    // set default month to current date
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+
+    // set month bounds
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(currentMonth);
+
+    // navigate between months
+    const goToNextMonth = () => {
+        // pass prev month, add 1
+        setCurrentMonth((prev) => addMonths(prev, 1));
+    };
+    const goToPreviousMonth = () => {
+        // pass prev month, subtract 1
+        setCurrentMonth((prev) => subMonths(prev, 1));
+    };
+
+    // array of date objects within bounds
+    const days = eachDayOfInterval({
+        start: monthStart,
+        end: monthEnd,
+    }).map(day => format(day, 'yyyy-MM-dd'));
 
     // updated logs when logEntry changes
     // important as logEntry is returned from async func in parent
@@ -46,6 +76,13 @@ function Calendar({ logEntries, days, triggerRefresh }) {
     };
     return (
         <div className='vertical-flex'>
+            {/* month navigation */}
+            <div className='horizontal-left'>calendar</div>
+            <div className='horizontal-space-between'>
+                <button onClick={goToPreviousMonth}>&lt;</button>
+                <p>{format(currentMonth, 'MMMM yyyy').toLowerCase()}</p>
+                <button onClick={goToNextMonth}>&gt;</button>
+            </div>
             {/* days grid */}
             <div className='calendar-grid'>
                 {/* render each day */}

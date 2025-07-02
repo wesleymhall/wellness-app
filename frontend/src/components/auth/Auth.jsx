@@ -38,6 +38,8 @@ function Auth() {
 
     // return JSX to render
     return (
+        <div className='centered'>
+        <div className='component-container'>
         <div className='horizontal-flex'>
         <div className='vertical-flex'>
             {isRegistering ? (
@@ -60,6 +62,8 @@ function Auth() {
                     </p>
                 </>
             )}
+        </div>
+        </div>
         </div>
         </div>
     );

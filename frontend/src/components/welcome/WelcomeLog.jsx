@@ -75,6 +75,8 @@ function WelcomeLog () {
     }
 
     return (
+        <div className='centered'>
+        <div className='component-container'>
         <div className='horizontal-flex'>
         <div className='vertical-flex'>
             {/* welcome user and ask for auth to log */}
@@ -84,6 +86,8 @@ function WelcomeLog () {
                 <button onClick={() => setUserAuth(true)}>yes</button>
                 <button onClick={() => setUserAuth(false)}>no</button>
             </div>
+        </div>
+        </div>
         </div>
         </div>
     );

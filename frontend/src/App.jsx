@@ -10,10 +10,6 @@ import { metricConfig } from './Metrics.js';
 function App() {
   return (
     <>
-    {/* <img src='/images/gif.gif' className='gif-container'/> */}
-    {/* define routes for the app */}
-    <div className='centered'>
-    <div className='app-container'>
       <Routes>
         {/* default route directs to auth */}
         <Route path='/' element={<Navigate to="/welcome" />} />
@@ -21,6 +17,7 @@ function App() {
         <Route path='/log' element={<WelcomeLog />} />
         <Route path='/dash' element={<Dash />} />
         {/* dynamic daily log routes */}
+        {/* name is key, config is value */}
         {Object.entries(metricConfig).map(([name, config], index, arr) => {
           const path = `/log/${name}`;
           const nextPath = index + 1 < arr.length
@@ -35,6 +32,7 @@ function App() {
                   metric={name}
                   array={config.array}
                   prompt={config.prompt}
+                  emoji={config.emoji}
                   destination={nextPath}
                 />
               }
@@ -42,8 +40,6 @@ function App() {
           )
         })}
       </Routes>
-    </div>
-    </div>
     </>
   );
 }

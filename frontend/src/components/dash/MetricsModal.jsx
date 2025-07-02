@@ -21,7 +21,7 @@ function MetricsModal({ onClose, selectedDay, logs, onSave }) {
                     const metricArray = config.array;
                     return (
                         <div key={index} className='horizontal-full'>
-                            <p>{config.emoji}</p>
+                            <p>{config.emoji}: </p>
                             <input
                                 type='range'
                                 min='1'

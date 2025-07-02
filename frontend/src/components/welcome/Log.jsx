@@ -4,10 +4,10 @@ import apiClient from '../../apiClient.js';
 import { format } from 'date-fns';
 
 
-function Log({metric, array, prompt, destination}) {
+function Log({metric, array, prompt, emoji, destination}) {
     const [selectedMetricIndex, setSelectedMetricIndex] = useState(Math.floor(array.length / 2) - 1);
     const [submitted, setSubmitted] = useState(false);
-    const [currentPrompt, setCurrentPrompt] = useState(prompt)
+    const [currentPrompt, setCurrentPrompt] = useState(<p>{emoji}: {prompt}</p>)
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ function Log({metric, array, prompt, destination}) {
         // reset states when props change
         setIsSubmitting(false);
         setSubmitted(false);
-        setCurrentPrompt(prompt);
+        setCurrentPrompt(<p>{emoji}: {prompt}</p>);
         setSelectedMetricIndex(Math.floor(array.length / 2) - 1);
     }, [metric, array, prompt]);
 
@@ -35,7 +35,7 @@ function Log({metric, array, prompt, destination}) {
             // set submission status to true
             setSubmitted(true);
             // set prompt to approval emote
-            setCurrentPrompt('ദ്ദി(˵•̀ᴗ-˵)✧')
+            setCurrentPrompt(<p>ദ്ദി(˵•̀ᴗ-˵)✧</p>)
             // redirect to destination after a short delay
             setTimeout(() => {
                 // navigate to next destination
@@ -49,6 +49,8 @@ function Log({metric, array, prompt, destination}) {
     };
 
     return (
+        <div className='centered'>
+        <div className='component-container' style={{ width: '600px' }}>
         <div className='horizontal-flex'>
         <div className='vertical-flex'>
             <p>{currentPrompt}</p>
@@ -93,6 +95,8 @@ function Log({metric, array, prompt, destination}) {
             </div>
             {/* disable button if submitting, prevents mutliple submission */}
             <button onClick={handleSubmit} disabled={isSubmitting}>submit</button>
+        </div>
+        </div>
         </div>
         </div>
     );

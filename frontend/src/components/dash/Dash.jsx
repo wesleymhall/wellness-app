@@ -1,45 +1,13 @@
 import apiClient from '../../apiClient.js';
 import Logout from '../auth/Logout.jsx';
 import Calendar from './Calendar.jsx';
-import LineGraph from './LineGraph.jsx';
-import CorrelationHeatMap from './CorrelationHeatMap.jsx';
 import { useState, useEffect } from 'react';
-import { 
-    startOfMonth,
-    endOfMonth,
-    eachDayOfInterval,
-    format,
-    addMonths,
-    subMonths,
-} from 'date-fns';
 
 
 function Dash () {
     const [logs, setLogs] = useState({});
     const [correlation, setCorrelation] = useState(null);
-    // set default month to current date
-    const [currentMonth, setCurrentMonth] = useState(new Date());
     const [refreshLogs, setRefreshLogs] = useState(false);
-
-    // set month bounds
-    const monthStart = startOfMonth(currentMonth);
-    const monthEnd = endOfMonth(currentMonth);
-
-    // navigate between months
-    const goToNextMonth = () => {
-        // pass prev month, add 1
-        setCurrentMonth((prev) => addMonths(prev, 1));
-    };
-    const goToPreviousMonth = () => {
-        // pass prev month, subtract 1
-        setCurrentMonth((prev) => subMonths(prev, 1));
-    };
-
-    // array of date objects within bounds
-    const daysArray = eachDayOfInterval({
-        start: monthStart,
-        end: monthEnd,
-    }).map(day => format(day, 'yyyy-MM-dd'));
 
     // get logs and analytics on component render and log refresh
     useEffect(() => {
@@ -82,21 +50,14 @@ function Dash () {
                     <button>≡</button>
                     <Logout/>
                 </div>
-                {/* month navigation */}
-                <div className='horizontal-space-between'>
-                    <button onClick={goToPreviousMonth}>&lt;</button>
-                    <p>{format(currentMonth, 'MMMM yyyy')}</p>
-                    <button onClick={goToNextMonth}>&gt;</button>
-                </div>
                 {/* child components */}
-                <Calendar 
-                    logEntries={logs} 
-                    days={daysArray}
-                    triggerRefresh={() => setRefreshLogs(prev => !prev)}
-                />
-                <LineGraph logEntries={logs} days={daysArray}/>
-                {/* render heatmap conditionally */}
-                {correlation ? <CorrelationHeatMap data={correlation} /> : null}
+                <div className='component-container'>
+                    <Calendar 
+                        logEntries={logs} 
+                        triggerRefresh={() => setRefreshLogs(prev => !prev)}
+                    />
+                </div>
+                <p>{JSON.stringify(correlation)}</p>
             </div>
         </div>
         </>
