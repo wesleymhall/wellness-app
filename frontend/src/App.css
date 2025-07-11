@@ -1,14 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
-
 /* GLOBAL STYLES */
 body {
-    font-family: 'Courier Prime', monospace; 
+    font-family: 'Times New Roman', monospace; 
     font-size: 16px; 
     line-height: 1.5; 
-    width: 100%;
-    height: 100%;
     color: #333;
-    overflow: hidden;
+    margin: 50px;
 }
 button, input, select, textarea {
     border-color: #fff;
@@ -42,9 +38,16 @@ button, input, select, textarea {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     height: 100%;
     width: 100%;
+}
+.vertical-space-between {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    height: 100%;
 }
 .horizontal-flex {
     display: flex;
@@ -53,6 +56,10 @@ button, input, select, textarea {
     align-items: center;
     position: relative;
     width: 100%;
+}
+.stretch-row {
+    align-items: stretch;
+    height: 100%;
 }
 .horizontal-space-between {
     display: flex;
@@ -64,6 +71,7 @@ button, input, select, textarea {
 }
 .horizontal-full{
     display: flex;
+    white-space: nowrap;
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
@@ -100,11 +108,14 @@ button, input, select, textarea {
     height: auto;
     width: auto;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    flex-direction: column;
+    justify-content: flex-start;
     padding: 20px;
+    margin: 10px;
 }
-
+.stretch-container {
+    flex: 1;
+}
 /* for making absolute elements relative */
 .flex-container {
     display: flex;
@@ -184,4 +195,14 @@ button, input, select, textarea {
 }
 .modal-content .vertical-flex {
     gap: 5px;
+}
+
+/* DAYLOG METRIC LIST */
+.daylog-list {
+    flex-grow: 1;
+    display: flex;
+    height: 250px; /* hardcoded height, could not figure out how to enable dynamic properly */
+    flex-direction: column;
+    width: 100%;
+    overflow-y: auto;
 }

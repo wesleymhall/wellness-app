@@ -1,7 +1,7 @@
 import apiClient from '../../apiClient.js';
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { metricConfig } from '../../Metrics.js';
 
 
@@ -9,9 +9,7 @@ import { metricConfig } from '../../Metrics.js';
 function WelcomeLog () {
     const [user, setUser] = useState('');
     const [hasLogsToday, setHasLogsToday] = useState(false);
-    // userAuth asks if user has time for log
-    const [userAuth, setUserAuth] = useState(null);
-    const [emote, setEmote] = useState('(˶ᵔᵕᵔ˶)')
+    const navigate = useNavigate();
 
     // run getUser and checkLogsToday when component mounts
     useEffect(() => {
@@ -50,28 +48,9 @@ function WelcomeLog () {
         }
     };
 
-    // if user says no, set emote to sad
-    const checkUserAuth = () => {
-        if (userAuth == false) {
-            setEmote('(ಥ﹏ಥ)')
-        }
-    };
-
-    // check userAuth state when it changes
-    useEffect(() => {
-        if (userAuth !== null) {
-            checkUserAuth();
-        }
-    }, [userAuth]);
-
     // if user has logged today, redirect to dash
     if (hasLogsToday) {
-        return <Navigate to='/dash' />;
-    }
-
-    // if user says yes, redirect to emotion log
-    if (userAuth == true) {
-        return <Navigate to={`/log/${Object.keys(metricConfig)[0]}`} />
+        navigate('/dash');
     }
 
     return (
@@ -80,12 +59,12 @@ function WelcomeLog () {
         <div className='horizontal-flex'>
         <div className='vertical-flex'>
             {/* welcome user and ask for auth to log */}
-            <p>hi {user} {emote}</p>
+            <p>hi {user} </p>
             <p>got a sec?</p>
-            <div>
-                <button onClick={() => setUserAuth(true)}>yes</button>
-                <button onClick={() => setUserAuth(false)}>no</button>
-            </div>
+            <p>
+                <button onClick={() => navigate(`/log/${Object.keys(metricConfig)[0]}`)}>yes</button>
+                <button onClick={() => navigate('/dash')}>no</button>
+            </p>
         </div>
         </div>
         </div>

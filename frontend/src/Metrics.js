@@ -56,7 +56,7 @@ const metricConfig = {
         emoji: '🛀',
         array: selfcares,
         color: 'rgb(135, 205, 147)',
-    }
+    },
 }
 
 export { metricConfig };

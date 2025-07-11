@@ -1,5 +1,3 @@
-import apiClient from '../../apiClient.js';
-import MetricsModal from './MetricsModal';
 import { useState, useEffect } from 'react';
 import { metricConfig } from '../../Metrics.js';
 import { 
@@ -12,10 +10,8 @@ import {
 } from 'date-fns';
 
 
-function Calendar({ logEntries, triggerRefresh }) {
+function Calendar({ logEntries, triggerDaySelect, selectedDay }) {
     const [logs, setLogs] = useState(logEntries);
-    const [selectedDay, setSelectedDay] = useState(null);
-    const [showModal, setShowModal] = useState(false);
     // set default month to current date
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -47,33 +43,9 @@ function Calendar({ logEntries, triggerRefresh }) {
 
     // dynamic log changes
     const handleDaySelect = (day) => {
-        setSelectedDay(day); // day is now a formatted string
-        setShowModal(true);
-    };
-    const handleModalClose = () => {
-        setSelectedDay(null);
-        setShowModal(false);
+        triggerDaySelect(day); // refresh day in parent component
     };
 
-    const handleSave = async (updatedLogs, day) => {
-        // optimistic update
-        setLogs(updatedLogs);
-        try {
-            if (updatedLogs[day]) {
-                // log metrics
-                for (const metric of updatedLogs[day]) {
-                    await apiClient.post('/log/logmetric', {value: metric.value, name: metric.metric, date: day});
-                };
-            } else {
-                // delete logs for day
-                await apiClient.delete('/log/deletelog', {data: {date: day}});
-            }
-        } catch (error) {
-            console.error('error saving changes:', error);
-        }
-        // refresh logs in parent component
-        triggerRefresh()
-    };
     return (
         <div className='vertical-flex'>
             {/* month navigation */}
@@ -119,15 +91,6 @@ function Calendar({ logEntries, triggerRefresh }) {
                     );
                 })}
             </div>
-            {/* if showModal and selectedDay, render metrics modal */}
-            {showModal && selectedDay && (
-                <MetricsModal
-                    onClose={handleModalClose}
-                    selectedDay={selectedDay}
-                    logs={logs}
-                    onSave={handleSave}
-                />
-            )}
         </div>
     );
 }

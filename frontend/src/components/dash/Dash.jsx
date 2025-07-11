@@ -2,12 +2,17 @@ import apiClient from '../../apiClient.js';
 import Logout from '../auth/Logout.jsx';
 import Calendar from './Calendar.jsx';
 import { useState, useEffect } from 'react';
+import DayLog from './DayLog.jsx';
+import { 
+    format,
+} from 'date-fns';
 
 
 function Dash () {
     const [logs, setLogs] = useState({});
     const [correlation, setCorrelation] = useState(null);
     const [refreshLogs, setRefreshLogs] = useState(false);
+    const [selectedDay, setSelectedDay] = useState(format(new Date(), 'yyyy-MM-dd'));
 
     // get logs and analytics on component render and log refresh
     useEffect(() => {
@@ -42,22 +47,59 @@ function Dash () {
         };
         getLogs();
     }, [refreshLogs]);  
+
+    const handleSave = async (updatedLogs, day) => {
+        // optimistic update
+        setLogs(updatedLogs);
+        try {
+            if (updatedLogs[day]) {
+                // log metrics
+                for (const metric of updatedLogs[day]) {
+                    await apiClient.post('/log/logmetric', {value: metric.value, name: metric.metric, date: day});
+                };
+            } else {
+                // delete logs for day
+                await apiClient.delete('/log/deletelog', {data: {date: day}});
+            }
+        } catch (error) {
+            console.error('error saving changes:', error);
+        }
+        // refresh logs in parent component
+        setRefreshLogs(prev => !prev)
+    };
+
     return (
         <>
         <div className='horizontal-flex'>
             <div className='vertical-flex'>
+                {/* child components */}
+                {/* row A */}
+                <div className='horizontal-flex stretch-row'>
+                    <div className='component-container stretch-container'>
+                        <Calendar 
+                            logEntries={logs} 
+                            triggerDaySelect={(day) => setSelectedDay(day)}
+                            selectedDay={selectedDay}
+                        />
+                    </div>
+                    <div className='component-container stretch-container'>
+                        <DayLog 
+                            selectedDay={selectedDay}
+                            logs={logs}
+                            onSave={handleSave}
+                        />
+                    </div>
+                </div>
+                {/* row B */}
+                <div className='horizontal-flex stretch row'>
+                    <div className='component-container stretch-container'>
+                        <p>{JSON.stringify(correlation)}</p>
+                    </div>
+                </div>
+
                 <div className='horizontal-space-between'>
-                    <button>≡</button>
                     <Logout/>
                 </div>
-                {/* child components */}
-                <div className='component-container'>
-                    <Calendar 
-                        logEntries={logs} 
-                        triggerRefresh={() => setRefreshLogs(prev => !prev)}
-                    />
-                </div>
-                <p>{JSON.stringify(correlation)}</p>
             </div>
         </div>
         </>
