@@ -7,19 +7,14 @@ function Logout() {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        // use axios instance with endpoint
         const response = await apiClient.post('/auth/logout');
         // navigate to default route
         navigate('/');
     };
 
-    // return JSX to render
     return (
-        <div>
-            <button onClick={handleLogout}>logout</button>
-        </div>
+        <button onClick={handleLogout}>logout</button>
     );
 };
 
-// export functional component for import
 export default Logout;

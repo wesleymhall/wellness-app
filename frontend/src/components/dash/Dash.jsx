@@ -1,28 +1,29 @@
 import apiClient from '../../apiClient.js';
-import Logout from '../auth/Logout.jsx';
+import DayLogs from './DayLogs.jsx';
 import Calendar from './Calendar.jsx';
+import Logout from '../auth/Logout.jsx';
+import MetricStats from './MetricStats.jsx';
+import Trends from './Trends.jsx';
+import { metricConfig } from '../../Metrics.js';
 import { useState, useEffect } from 'react';
-import DayLog from './DayLog.jsx';
-import { 
-    format,
-} from 'date-fns';
+import { format } from 'date-fns';
 
 
 function Dash () {
     const [logs, setLogs] = useState({});
-    const [correlation, setCorrelation] = useState(null);
-    const [refreshLogs, setRefreshLogs] = useState(false);
+    const [analytics, setAnalytics] = useState(null);
     const [selectedDay, setSelectedDay] = useState(format(new Date(), 'yyyy-MM-dd'));
+    const [dayLogs, setDayLogs] = useState([]);
 
-    // get logs and analytics on component render and log refresh
+    // get data on component render
     useEffect(() => {
         const getLogs = async () => {
             try {
                 const response = await apiClient.get('/dash/getlogs');
                 const metricsLogs = response.data.metrics_logs;
-                // get correlation analytics
-                const correlation = response.data.analytics.correlations;
-                setCorrelation(correlation)
+                // get analytics
+                const analytics = response.data.analytics;
+                setAnalytics(analytics)
                 // map logs to dates
                 const logsByDate = {};
                 metricsLogs.forEach((metric) => {
@@ -46,26 +47,45 @@ function Dash () {
             }
         };
         getLogs();
-    }, [refreshLogs]);  
+    }, []);  
 
-    const handleSave = async (updatedLogs, day) => {
-        // optimistic update
-        setLogs(updatedLogs);
+    useEffect(() => {
+        // generate default logs for empty day
+        if (!logs[selectedDay]) {
+            const defaultDay = Object.keys(metricConfig).map(metricName => ({
+                metric: metricName,
+                value: 1,
+            }));
+            setDayLogs(defaultDay);
+        }
+        // else assign logs to day
+        else {
+            setDayLogs(logs[selectedDay]);
+        }
+    }, [selectedDay, logs]);
+
+    const handleChange = async (updatedDayLog, day) => {
+        // shallow clone logs
+        const logsCopy = { ...logs};
         try {
-            if (updatedLogs[day]) {
+            if (updatedDayLog) {
+                // update local copy
+                logsCopy[day] = updatedDayLog;
                 // log metrics
-                for (const metric of updatedLogs[day]) {
+                for (const metric of updatedDayLog) {
                     await apiClient.post('/log/logmetric', {value: metric.value, name: metric.metric, date: day});
                 };
             } else {
-                // delete logs for day
+                // update local copy
+                delete logsCopy[day];
+                // delete logs
                 await apiClient.delete('/log/deletelog', {data: {date: day}});
             }
         } catch (error) {
             console.error('error saving changes:', error);
         }
-        // refresh logs in parent component
-        setRefreshLogs(prev => !prev)
+        // pessimistic update
+        setLogs(logsCopy);
     };
 
     return (
@@ -77,27 +97,34 @@ function Dash () {
                 <div className='horizontal-flex stretch-row'>
                     <div className='component-container stretch-container'>
                         <Calendar 
-                            logEntries={logs} 
-                            triggerDaySelect={(day) => setSelectedDay(day)}
+                            calendarLogs={logs} 
+                            triggerDaySelect={(day) => {
+                                setSelectedDay(day);
+                            }}
                             selectedDay={selectedDay}
                         />
                     </div>
                     <div className='component-container stretch-container'>
-                        <DayLog 
+                        <DayLogs 
                             selectedDay={selectedDay}
-                            logs={logs}
-                            onSave={handleSave}
+                            onChange={handleChange}
+                            dayLogs={dayLogs}
                         />
                     </div>
                 </div>
                 {/* row B */}
-                <div className='horizontal-flex stretch row'>
+                <div className='horizontal-flex stretch-row'>
                     <div className='component-container stretch-container'>
-                        <p>{JSON.stringify(correlation)}</p>
+                        <MetricStats
+                            analytics={analytics}
+                        />
+                    </div>
+                    <div className='component-container stretch-container'>
+                        <Trends/>
                     </div>
                 </div>
-
-                <div className='horizontal-space-between'>
+                {/* logout component */}
+                <div className='horizontal-full'>
                     <Logout/>
                 </div>
             </div>

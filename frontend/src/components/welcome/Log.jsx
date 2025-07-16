@@ -9,7 +9,38 @@ function Log({metric, array, prompt, emoji, destination}) {
     const [submitted, setSubmitted] = useState(false);
     const [currentPrompt, setCurrentPrompt] = useState(<p>{emoji}: {prompt}</p>)
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [hasLogsToday, setHasLogsToday] = useState(false);
     const navigate = useNavigate();
+
+    // check for logs today on component mount
+    useEffect(() => {
+        checkLogsToday();
+    }, []);
+
+    // check if logs exist for the current day
+    const checkLogsToday = async () => {
+        try {
+            const today = format(new Date(), 'yyyy-MM-dd'); 
+            const response = await apiClient.get('/dash/getlogs'); 
+            const metricLogs = response.data.metrics_logs;
+
+            // check if any logs exist for today
+            const hasLogs = metricLogs.some((metric) =>
+                metric.logs.some((log) => {
+                    // convert log timestamp to date string without time
+                    const logDate = new Date(log.timestamp).toISOString().split('T')[0];
+                    return logDate === today;
+                })
+            );
+            setHasLogsToday(hasLogs);
+        } catch (error) {
+            console.error('error checking logs:', error);
+    }};
+
+    // if user has logged today, redirect to dash
+    if (hasLogsToday) {
+        navigate('/dash');
+    }
 
     useEffect(() => {
         // reset states when props change
@@ -53,7 +84,7 @@ function Log({metric, array, prompt, emoji, destination}) {
         <div className='component-container' style={{ width: '600px' }}>
         <div className='horizontal-flex'>
         <div className='vertical-flex'>
-            <p>{currentPrompt}</p>
+            <div>{currentPrompt}</div>
             <div className='horizontal-flex'>
                 <div className='flex-container'>
                 {array.map((metric, index) => {

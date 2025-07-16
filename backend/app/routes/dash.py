@@ -1,6 +1,6 @@
 from app import db
 from app.models import User, Metric, Log
-from app.analytics import correlation
+from app.analytics import analytics
 from flask import Blueprint, jsonify, session 
 
 dash_bp = Blueprint('dash', __name__)
@@ -26,12 +26,14 @@ def get_logs():
         logs_data = [{'id': log.id, 'value': log.value, 'timestamp': log.timestamp} for log in logs]
         metrics_logs.append({'metric': metric.name, 'logs': logs_data})
     # get correlation analytics
-    correlations = correlation.get_correlations(user.id)
+    correlations = analytics.get_correlations(user.id)
+    clusters = analytics.get_clusters(user.id)
     
     # return metrics logs as JSON
     return jsonify({
         'metrics_logs': metrics_logs,
         'analytics': {
-            'correlations': correlations
+            'correlations': correlations,
+            'clusters': clusters,
         }
     }), 200

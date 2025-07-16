@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { metricConfig } from '../../Metrics.js';
 import { 
     startOfMonth,
@@ -8,10 +7,11 @@ import {
     addMonths,
     subMonths,
 } from 'date-fns';
+import { useState, useEffect } from 'react';
 
 
-function Calendar({ logEntries, triggerDaySelect, selectedDay }) {
-    const [logs, setLogs] = useState(logEntries);
+function Calendar({ calendarLogs, triggerDaySelect, selectedDay }) {
+    const [logs, setLogs] = useState(calendarLogs);
     // set default month to current date
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -35,21 +35,15 @@ function Calendar({ logEntries, triggerDaySelect, selectedDay }) {
         end: monthEnd,
     }).map(day => format(day, 'yyyy-MM-dd'));
 
-    // updated logs when logEntry changes
-    // important as logEntry is returned from async func in parent
+    // updated logs upon prop change
     useEffect(() => {
-        setLogs(logEntries);
-    }, [logEntries]);
-
-    // dynamic log changes
-    const handleDaySelect = (day) => {
-        triggerDaySelect(day); // refresh day in parent component
-    };
+        setLogs(calendarLogs);
+    }, [calendarLogs]);
 
     return (
         <div className='vertical-flex'>
-            {/* month navigation */}
             <div className='horizontal-left'>calendar</div>
+            {/* month navigation */}
             <div className='horizontal-space-between'>
                 <button onClick={goToPreviousMonth}>&lt;</button>
                 <p>{format(currentMonth, 'MMMM yyyy').toLowerCase()}</p>
@@ -64,22 +58,19 @@ function Calendar({ logEntries, triggerDaySelect, selectedDay }) {
                         <div 
                             key={day} 
                             className={`calendar-day ${isSelected ? 'selected' : ''}`}
-                            onClick={() => handleDaySelect(day)}
+                            onClick={() => triggerDaySelect(day)}
                         >
                             {/* if day has logs, render metric emote with max value */}
                             {logs[day]?.length >= 1 ? (
                                 <div>
                                     {
                                         (() => {
-                                            {/* reduce loops logs[day] callback compares log with prev to find max */}
+                                            {/* reduce iterates logs[day], callback compares log with prev to find max */}
                                             {/* reduce(callback, index) */}
                                             const maxLog = logs[day].reduce((max, log) =>
                                                 log.value > max.value ? log : max, logs[day][0]);
                                             {/* access array in metricConfig, find emote that equals value */}
                                             {/* use option chaining to safely access this emote */}
-                                            {/* BUG: not sure why but metricConfig[maxLog.metric] returns undefined 
-                                                upon save changes without the option chaining and throws error 
-                                                could be timing issue with the api call to backend not sure*/}
                                             return metricConfig[maxLog.metric]?.array?.find(
                                                 emote => emote.id === maxLog.value
                                                 )?.emote || null;

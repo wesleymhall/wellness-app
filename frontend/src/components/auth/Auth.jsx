@@ -1,13 +1,12 @@
 import apiClient from '../../apiClient.js';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
-import { useState, useEffect } from 'react';
+import { metricConfig } from '../../Metrics.js';
 import { Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 
 function Auth() {
-    // react hooks let us change and track state in functional components
-    // const [state, setState] = useState(initialValue)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
 
@@ -17,26 +16,24 @@ function Auth() {
             const response = await apiClient.get('/auth/session')
             setIsLoggedIn(response.data.isLoggedIn);
         } catch (error) {
-            console.error('Error checking session:', error);
+            console.error('error checking session:', error);
         }
     }
 
-    // run checkSession function when component mounts
+    // run checkSession on component mounts
     useEffect(() => {
         checkSession();
     }, []);
 
-    // toggle registering state
     const toggleRegister = () => {
         setIsRegistering(!isRegistering);
     };
 
-    // if logged in, navigate to home page
+    // if logged in, navigate to destination
     if (isLoggedIn) {
-        return <Navigate to='/log' />;
+        return <Navigate to={`/log/${Object.keys(metricConfig)[0]}`} />;
     };
 
-    // return JSX to render
     return (
         <div className='centered'>
         <div className='component-container'>
@@ -45,8 +42,6 @@ function Auth() {
             {isRegistering ? (
                 <>
                     {/* if registering */}
-                    {/* render Register component and pass toggleRegister as prop */}
-                    {/* props are used to pass data and logic to child components */}
                     <Register toggleRegister={toggleRegister} />
                     <p>
                         <button onClick={toggleRegister}>login?</button>
@@ -55,7 +50,6 @@ function Auth() {
             ) : (
                  <>
                     {/* if not registering */}
-                    {/* render Login component and pass checkSession as prop*/}
                     <Login onLogin={checkSession} />
                     <p>
                         <button onClick={toggleRegister}>register?</button>
@@ -69,5 +63,4 @@ function Auth() {
     );
 }
 
-// export functional component for import
 export default Auth;
