@@ -81,7 +81,7 @@ function Log({metric, array, prompt, emoji, destination}) {
 
     return (
         <div className='centered'>
-        <div className='component-container' style={{ width: '600px' }}>
+        <div className='component-container' type='cards'>
         <div className='horizontal-flex'>
         <div className='vertical-flex'>
             <div>{currentPrompt}</div>
@@ -103,8 +103,8 @@ function Log({metric, array, prompt, emoji, destination}) {
                                 transform: submitted
                                     ? isSelected
                                         ? `scale(1.3)`
-                                        : `translateY(100px) translateX(${position * 75}px)`
-                                    : `translateX(${position * 75}px) scale(${isSelected ? 1.3 : 1})`,
+                                        : `translateY(100px) translateX(${position * 200}px)`
+                                    : `translateX(${position * 200}px) scale(${isSelected ? 1.3 : 1})`,
                                 zIndex: isSelected ? 10 : 10 - Math.abs(position),
                                 opacity: submitted
                                     ? isSelected
@@ -125,7 +125,7 @@ function Log({metric, array, prompt, emoji, destination}) {
                 </div>
             </div>
             {/* disable button if submitting, prevents mutliple submission */}
-            <button onClick={handleSubmit} disabled={isSubmitting}>submit</button>
+            <button onClick={handleSubmit} disabled={isSubmitting} type='cards'>submit</button>
         </div>
         </div>
         </div>

@@ -14,9 +14,10 @@ function DayLogs({ selectedDay, onChange, dayLogs }) {
                 const config = metricConfig[log.metric];
                 const metricArray = config.array;
                 return (
-                    <div key={index} className='horizontal-full'>
+                    <div key={index} className='vertical-flex horizontal-full'>
                         <p>{config.emoji}: </p>
                         <input
+                            className='slider'
                             type='range'
                             min='1'
                             max={metricArray.length}

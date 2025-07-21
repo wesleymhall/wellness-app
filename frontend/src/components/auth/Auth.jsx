@@ -36,24 +36,20 @@ function Auth() {
 
     return (
         <div className='centered'>
-        <div className='component-container'>
         <div className='horizontal-flex'>
         <div className='vertical-flex'>
+        <div className='component-container'>
             {isRegistering ? (
                 <>
                     {/* if registering */}
                     <Register toggleRegister={toggleRegister} />
-                    <p>
-                        <button onClick={toggleRegister}>login?</button>
-                    </p>
+                    <button type='plaintext' onClick={toggleRegister}>already have an account</button>
                 </>
             ) : (
                  <>
                     {/* if not registering */}
                     <Login onLogin={checkSession} />
-                    <p>
-                        <button onClick={toggleRegister}>register?</button>
-                    </p>
+                    <button type='plaintext' onClick={toggleRegister}>create an account</button>
                 </>
             )}
         </div>

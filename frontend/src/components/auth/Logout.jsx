@@ -13,7 +13,7 @@ function Logout() {
     };
 
     return (
-        <button onClick={handleLogout}>logout</button>
+        <button type='plaintext' onClick={handleLogout}>logout</button>
     );
 };
 

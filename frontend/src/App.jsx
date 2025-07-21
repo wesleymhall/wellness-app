@@ -9,6 +9,7 @@ import { metricConfig } from './Metrics.js';
 function App() {
   return (
     <>
+      {/* <img src='/images/gif.gif' className='gif-container'/> */}
       <Routes>
         {/* default route directs to auth */}
         <Route path='/' element={<Navigate to="/welcome" />} />

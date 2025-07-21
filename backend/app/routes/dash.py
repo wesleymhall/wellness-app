@@ -25,15 +25,18 @@ def get_logs():
         logs = Log.query.filter_by(metric_id=metric.id).all()
         logs_data = [{'id': log.id, 'value': log.value, 'timestamp': log.timestamp} for log in logs]
         metrics_logs.append({'metric': metric.name, 'logs': logs_data})
-    # get correlation analytics
-    correlations = analytics.get_correlations(user.id)
-    clusters = analytics.get_clusters(user.id)
+    # get analytics
+    correlations = {}
+    averages = {}
+    for metric in metrics:
+        correlations[metric.name] = analytics.get_correlations(user.id, metric.name)
+        averages[metric.name] = analytics.get_averages(user.id, metric.name)
     
     # return metrics logs as JSON
     return jsonify({
         'metrics_logs': metrics_logs,
-        'analytics': {
+        'username': username,
+        'analytics' : {
             'correlations': correlations,
-            'clusters': clusters,
         }
     }), 200

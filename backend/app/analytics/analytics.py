@@ -17,7 +17,6 @@ def get_metric_dataframe(user_id):
         # stmt is select object, unexecuted query
         # use sqlalchemy engine to run query
         df = pd.read_sql(query, conn)
-    print('frame: ', df)
     return df
 
 
@@ -30,12 +29,11 @@ def get_pivoted_metrics(df):
         columns='name',
         values='value',
     )
-    print('pivot: ', pivoted)
     # reset index to make timestamp a normal column for data manipulation
     return pivoted
 
 
-def get_correlations(user_id):
+def get_correlations(user_id, metric):
     df = get_metric_dataframe(user_id)
     pivoted = get_pivoted_metrics(df)
     # if table is empty return empty dict
@@ -45,20 +43,46 @@ def get_correlations(user_id):
     # 1 for self comparison, 0 for diagonal comparison
     # shape[1] columns, shape[0] rows
     if pivoted.shape[1] == 1 or pivoted.shape[0] == 1:
-        correlations = pivoted.corr()
-        for row in correlations.index:
-            for col in correlations.columns:
-                correlations.at[row, col] = 1 if row == col else 0
-        return correlations.to_dict()
-    correlations = pivoted.corr()
-    # convert df to nested dict for JSON
-    return correlations.to_dict()
+        default = pivoted.corr()
+        for row in default.index:
+            for col in default.columns:
+                default.at[row, col] = 1 if row == col else 0
+        metric_default = default[metric]
+        correlations = {'week' : metric_default.to_dict(), 
+                        'month': metric_default.to_dict(), 
+                        'year': metric_default.to_dict(),
+        }
+        return correlations
+    # get corrs in spans
+    week = pivoted.tail(7).corr()[metric].to_dict()
+    month = pivoted.tail(30).corr()[metric].to_dict()
+    year = pivoted.tail(365).corr()[metric].to_dict()
+    correlations = {'week' : week, 
+                    'month': month, 
+                    'year': year,
+    }
+    return correlations
+
+
+def get_averages(user_id, metric):
+    df = get_metric_dataframe(user_id)
+    pivoted = get_pivoted_metrics(df)
+    # if table is empty return empty dict
+    if pivoted.empty:
+        return {}
+    # get averages in spans
+    week = pivoted[metric].tail(7).mean()
+    month = pivoted[metric].tail(30).mean()
+    year = pivoted[metric].tail(365).mean()
+    averages = {'week': week, 'month': month, 'year': year}
+    # return dict
+    return averages
 
 
 def get_clusters(user_id):
     df = get_metric_dataframe(user_id)
     pivoted = get_pivoted_metrics(df)
-    # if table is empty return empty dict
+    # if table is empty or has less than 10 rows return empty dict
     if pivoted.empty or pivoted.shape[0] < 10:
         return {}
 
@@ -72,4 +96,3 @@ def get_clusters(user_id):
     center_df = pd.DataFrame(center, columns=pivoted.columns)
     # orient records so each row is dict, not column
     return center_df.to_dict(orient='records')
-

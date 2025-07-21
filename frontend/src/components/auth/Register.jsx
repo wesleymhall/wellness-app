@@ -5,7 +5,6 @@ import apiClient from '../../apiClient.js';
 function Register({ toggleRegister }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
 
     // form submit event is passed to async function
     const handleSubmit = async (e) => {
@@ -18,30 +17,30 @@ function Register({ toggleRegister }) {
             });
             toggleRegister();
         } catch (error) { // if error occurs, set message to error response data
-            setMessage(error.response.data.error);
+            alert(error.response.data.error);
         }
     };
     
     return (
-        <div>
-            <form onSubmit={handleSubmit} className='horizontal-flex'>
+        <form onSubmit={handleSubmit} className='vertical-flex'>
+            <div className='horizontal-flex'>
                 <input
-                type="text"
-                placeholder="username"
+                type='text'
+                placeholder='username'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
-                type="password"
-                placeholder="password"
+                type='password'
+                placeholder='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">register</button>
-            </form>
-            {/* if message is not empty, display it */}
-            {message && <p>{message}</p>}
-        </div>
+            </div>
+            <p className='horizontal-full'>
+                <button type='submit'>register</button>
+            </p>
+        </form>
     );
 };
 

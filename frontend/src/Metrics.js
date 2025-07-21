@@ -1,5 +1,5 @@
 
-const emotions = [
+const feelings = [
     { id: 1, emote: '(╥﹏╥)' },
     { id: 2, emote: '(ಥ﹏ಥ)' },
     { id: 3, emote: '(｡•́︿•̀｡)' },
@@ -39,19 +39,22 @@ const selfcares = [
 ];
 
 const metricConfig = {
-    'emotion' : {
+    'feeling' : {
+        name: 'feeling',
         prompt: 'how do u feel?',
         emoji: '🙂',
-        array: emotions,
+        array: feelings,
         color: 'rgb(205, 135, 141)',
     },
     'sleep' : {
+        name: 'sleep',
         prompt: 'how was ur sleep?',
         emoji: '💤',
         array: sleeps,
         color: 'rgb(135, 194, 205)',
     },
     'selfcare' : {
+        name: 'selfcare',
         prompt: 'selfcare, hygiene, routines?',
         emoji: '🛀',
         array: selfcares,

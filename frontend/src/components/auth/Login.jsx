@@ -5,7 +5,6 @@ import apiClient from '../../apiClient.js';
 function Login({ onLogin }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
 
     // form submit event is passed to async function
     const handleSubmit = async (e) => {
@@ -18,13 +17,13 @@ function Login({ onLogin }) {
             });
             onLogin();
         } catch (error) { // if error occurs, set message to error response data
-            setMessage(error.response.data.error);
+            alert(error.response.data.error);
         }
     };
     
     return (
-        <div>
-            <form onSubmit={handleSubmit} className='horizontal-flex'>
+        <form onSubmit={handleSubmit} className='vertical-flex'>
+            <div className='horizontal-flex'>
                 <input
                 type='text'
                 placeholder='username'
@@ -37,11 +36,11 @@ function Login({ onLogin }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 />
+            </div>
+            <p className='horizontal-full'>
                 <button type='submit'>login</button>
-            </form>
-            {/* if message is not empty, display it */}
-            {message && <p>{message}</p>}
-        </div>
+            </p>
+        </form>
     );
 };
 
